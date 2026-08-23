@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useAuth } from "@/hooks/use-auth";
+import { isValidIITREmail } from "@/lib/academic-identity";
 import { ArrowRight, Loader2, MailCheck } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
@@ -36,8 +37,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     const fd = new FormData(e.currentTarget);
     const email = (fd.get("email") as string).trim().toLowerCase();
 
-    if (!email.endsWith(IITR_DOMAIN)) {
-      setError(`Only institute accounts (${IITR_DOMAIN}) can sign in.`);
+    if (!isValidIITREmail(email)) {
+      setError(`Only institute accounts (${IITR_DOMAIN} or subdomains like @me.iitr.ac.in) can sign in.`);
       return;
     }
     setIsLoading(true);

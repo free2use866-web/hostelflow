@@ -102,6 +102,13 @@ export interface User {
   bhawan: Bhawan;
   roomNo: string;
   avatar?: string;
+  // ── Verified academic identity (onboarding gate) ──
+  enrollmentNumber?: string; // 8-digit YYBBBXXX
+  enrollmentYear?: number;
+  branchCode?: number;
+  branchName?: string;
+  academicYear?: number;
+  isVerified: boolean;
 }
 
 export interface Complaint {

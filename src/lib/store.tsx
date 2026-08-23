@@ -24,24 +24,24 @@ function genMockData(): AppState {
   const n = () => next++;
 
   const users: User[] = [
-    { id: uid("u", n()), name: "Aarav Mehta", email: "aarav.m@iitr.ac.in", role: "Student", bhawan: "Ravindra", roomNo: "B-201" },
-    { id: uid("u", n()), name: "Priya Sharma", email: "priya.s@iitr.ac.in", role: "Student", bhawan: "Ravindra", roomNo: "B-205" },
-    { id: uid("u", n()), name: "Rohan Verma", email: "rohan.v@iitr.ac.in", role: "Student", bhawan: "Govind", roomNo: "A-112" },
-    { id: uid("u", n()), name: "Ananya Singh", email: "ananya.s@iitr.ac.in", role: "Student", bhawan: "Cautley", roomNo: "C-301" },
-    { id: uid("u", n()), name: "Karthik Nair", email: "karthik.n@iitr.ac.in", role: "Student", bhawan: "Rajendra", roomNo: "A-105" },
-    { id: uid("u", n()), name: "Meera Iyer", email: "meera.i@iitr.ac.in", role: "Student", bhawan: "Sarojini", roomNo: "B-401" },
-    { id: uid("u", n()), name: "Vikram Joshi", email: "vikram.j@iitr.ac.in", role: "Student", bhawan: "Ravindra", roomNo: "A-108" },
-    { id: uid("u", n()), name: "Diya Patel", email: "diya.p@iitr.ac.in", role: "Student", bhawan: "Govind", roomNo: "C-204" },
-    { id: uid("u", n()), name: "Nikhil Gupta", email: "nikhil.g@iitr.ac.in", role: "Student", bhawan: "Rajendra", roomNo: "B-310" },
-    { id: uid("u", n()), name: "Sakshi Agarwal", email: "sakshi.a@iitr.ac.in", role: "Student", bhawan: "Sarojini", roomNo: "A-202" },
-    { id: uid("u", n()), name: "Aditya Tiwari", email: "aditya.t@iitr.ac.in", role: "MessSec", bhawan: "Ravindra", roomNo: "A-101" },
-    { id: uid("u", n()), name: "Raj Kumar", email: "raj.k@iitr.ac.in", role: "MaintSec", bhawan: "Govind", roomNo: "B-102" },
-    { id: uid("u", n()), name: "Shreya Bose", email: "shreya.b@iitr.ac.in", role: "GenSec", bhawan: "Cautley", roomNo: "A-201" },
-    { id: uid("u", n()), name: "Tushar Malhotra", email: "tushar.m@iitr.ac.in", role: "SportsSec", bhawan: "Rajendra", roomNo: "C-103" },
-    { id: uid("u", n()), name: "Nandini Reddy", email: "nandini.r@iitr.ac.in", role: "WellnessSec", bhawan: "Sarojini", roomNo: "B-301" },
-    { id: uid("u", n()), name: "Arjun Deshpande", email: "arjun.d@iitr.ac.in", role: "TechSec", bhawan: "Ravindra", roomNo: "C-401" },
-    { id: uid("u", n()), name: "Pooja Saxena", email: "pooja.s@iitr.ac.in", role: "AsstWarden", bhawan: "Ravindra", roomNo: "W-1" },
-    { id: uid("u", n()), name: "Prof. Harish Chandra", email: "harish.c@iitr.ac.in", role: "Warden", bhawan: "Ravindra", roomNo: "W-0" },
+    { id: uid("u", n()), name: "Aarav Mehta", email: "aarav.m@iitr.ac.in", role: "Student", bhawan: "Ravindra", roomNo: "B-201", enrollmentNumber: "23114012", enrollmentYear: 2023, branchCode: 114, branchName: "Computer Science & Engineering", academicYear: 3, isVerified: true },
+    { id: uid("u", n()), name: "Priya Sharma", email: "priya.s@iitr.ac.in", role: "Student", bhawan: "Ravindra", roomNo: "B-205", enrollmentNumber: "23115033", enrollmentYear: 2023, branchCode: 115, branchName: "Electrical Engineering", academicYear: 3, isVerified: true },
+    { id: uid("u", n()), name: "Rohan Verma", email: "rohan.v@iitr.ac.in", role: "Student", bhawan: "Govind", roomNo: "A-112", enrollmentNumber: "24117021", enrollmentYear: 2024, branchCode: 117, branchName: "Mechanical Engineering", academicYear: 2, isVerified: true },
+    { id: uid("u", n()), name: "Ananya Singh", email: "ananya.s@iitr.ac.in", role: "Student", bhawan: "Cautley", roomNo: "C-301", enrollmentNumber: "23323008", enrollmentYear: 2023, branchCode: 323, branchName: "Mathematics and Computing", academicYear: 3, isVerified: true },
+    { id: uid("u", n()), name: "Karthik Nair", email: "karthik.n@iitr.ac.in", role: "Student", bhawan: "Rajendra", roomNo: "A-105", enrollmentNumber: "22116045", enrollmentYear: 2022, branchCode: 116, branchName: "Electronics & Communication Engineering", academicYear: 4, isVerified: true },
+    { id: uid("u", n()), name: "Meera Iyer", email: "meera.i@iitr.ac.in", role: "Student", bhawan: "Sarojini", roomNo: "B-401", enrollmentNumber: "23112019", enrollmentYear: 2023, branchCode: 112, branchName: "Chemical Engineering", academicYear: 3, isVerified: true },
+    { id: uid("u", n()), name: "Vikram Joshi", email: "vikram.j@iitr.ac.in", role: "Student", bhawan: "Ravindra", roomNo: "A-108", enrollmentNumber: "22113022", enrollmentYear: 2022, branchCode: 113, branchName: "Civil Engineering", academicYear: 4, isVerified: true },
+    { id: uid("u", n()), name: "Diya Patel", email: "diya.p@iitr.ac.in", role: "Student", bhawan: "Govind", roomNo: "C-204", enrollmentNumber: "24123010", enrollmentYear: 2024, branchCode: 123, branchName: "Engineering Physics", academicYear: 2, isVerified: true },
+    { id: uid("u", n()), name: "Nikhil Gupta", email: "nikhil.g@iitr.ac.in", role: "Student", bhawan: "Rajendra", roomNo: "B-310", enrollmentNumber: "22119007", enrollmentYear: 2022, branchCode: 119, branchName: "Production and Industrial Engineering", academicYear: 4, isVerified: true },
+    { id: uid("u", n()), name: "Sakshi Agarwal", email: "sakshi.a@iitr.ac.in", role: "Student", bhawan: "Sarojini", roomNo: "A-202", enrollmentNumber: "24125015", enrollmentYear: 2024, branchCode: 125, branchName: "Data Science and Artificial Intelligence", academicYear: 2, isVerified: true },
+    { id: uid("u", n()), name: "Aditya Tiwari", email: "aditya.t@iitr.ac.in", role: "MessSec", bhawan: "Ravindra", roomNo: "A-101", enrollmentNumber: "22115009", enrollmentYear: 2022, branchCode: 115, branchName: "Electrical Engineering", academicYear: 4, isVerified: true },
+    { id: uid("u", n()), name: "Raj Kumar", email: "raj.k@iitr.ac.in", role: "MaintSec", bhawan: "Govind", roomNo: "B-102", enrollmentNumber: "23113014", enrollmentYear: 2023, branchCode: 113, branchName: "Civil Engineering", academicYear: 3, isVerified: true },
+    { id: uid("u", n()), name: "Shreya Bose", email: "shreya.b@iitr.ac.in", role: "GenSec", bhawan: "Cautley", roomNo: "A-201", enrollmentNumber: "22114005", enrollmentYear: 2022, branchCode: 114, branchName: "Computer Science & Engineering", academicYear: 4, isVerified: true },
+    { id: uid("u", n()), name: "Tushar Malhotra", email: "tushar.m@iitr.ac.in", role: "SportsSec", bhawan: "Rajendra", roomNo: "C-103", enrollmentNumber: "24117031", enrollmentYear: 2024, branchCode: 117, branchName: "Mechanical Engineering", academicYear: 2, isVerified: true },
+    { id: uid("u", n()), name: "Nandini Reddy", email: "nandini.r@iitr.ac.in", role: "WellnessSec", bhawan: "Sarojini", roomNo: "B-301", enrollmentNumber: "23124011", enrollmentYear: 2023, branchCode: 124, branchName: "Biosciences and Bioengineering", academicYear: 3, isVerified: true },
+    { id: uid("u", n()), name: "Arjun Deshpande", email: "arjun.d@iitr.ac.in", role: "TechSec", bhawan: "Ravindra", roomNo: "C-401", enrollmentNumber: "23125018", enrollmentYear: 2023, branchCode: 125, branchName: "Data Science and Artificial Intelligence", academicYear: 3, isVerified: true },
+    { id: uid("u", n()), name: "Pooja Saxena", email: "pooja.s@iitr.ac.in", role: "AsstWarden", bhawan: "Ravindra", roomNo: "W-1", isVerified: true },
+    { id: uid("u", n()), name: "Prof. Harish Chandra", email: "harish.c@iitr.ac.in", role: "Warden", bhawan: "Ravindra", roomNo: "W-0", isVerified: true },
   ];
 
   const sys = (r: Role) => users.find((u) => u.role === r && u.bhawan === "Ravindra")!;
@@ -292,6 +292,11 @@ interface StoreContextType extends AppState {
   switchUser: (userId: string) => void;
   switchByEmail: (email: string) => void;
   genId: (prefix: string) => string;
+  completeOnboarding: (data: {
+    name: string; enrollmentNumber: string; enrollmentYear: number;
+    branchCode: number; branchName: string; academicYear: number;
+    bhawan: Bhawan; roomNo: string;
+  }) => void;
 
   addComplaint: (c: Omit<Complaint, "id" | "createdAt" | "updatedAt" | "isOverdue" | "comments" | "assignedRole">) => void;
   updateComplaintStatus: (id: string, status: ComplaintStatus, note?: string) => void;
@@ -348,12 +353,41 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setState((s) => {
       const match = s.users.find((u) => u.email === email);
       if (match) return { ...s, currentUserId: match.id };
+      // New sign-in → unverified until onboarding completes
       const newUser: User = {
         id: uid("u", s.nextId), name: email.split("@")[0], email,
         role: "Student", bhawan: "Ravindra", roomNo: "A-000",
+        isVerified: false,
       };
       return { ...s, users: [...s.users, newUser], currentUserId: newUser.id, nextId: s.nextId + 1 };
     });
+  }, []);
+
+  /** Onboarding gate: persist verified academic identity. */
+  const completeOnboarding = useCallback((data: {
+    name: string; enrollmentNumber: string; enrollmentYear: number;
+    branchCode: number; branchName: string; academicYear: number;
+    bhawan: Bhawan; roomNo: string;
+  }) => {
+    setState((s) => ({
+      ...s,
+      users: s.users.map((u) =>
+        u.id === s.currentUserId
+          ? {
+              ...u,
+              name: data.name,
+              enrollmentNumber: data.enrollmentNumber,
+              enrollmentYear: data.enrollmentYear,
+              branchCode: data.branchCode,
+              branchName: data.branchName,
+              academicYear: data.academicYear,
+              bhawan: data.bhawan,
+              roomNo: data.roomNo,
+              isVerified: true,
+            }
+          : u,
+      ),
+    }));
   }, []);
 
   const patch = useCallback((updater: (s: AppState) => AppState) => {
@@ -513,7 +547,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   return (
     <StoreContext.Provider
       value={{
-        ...state, currentUser, switchUser, switchByEmail, genId,
+        ...state, currentUser, switchUser, switchByEmail, genId, completeOnboarding,
         addComplaint, updateComplaintStatus, reassignComplaint, addComplaintComment,
         addSickDietRequest, updateSickDietStatus,
         addSuggestion, upvoteSuggestion, updateSuggestionStatus,

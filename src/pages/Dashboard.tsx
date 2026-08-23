@@ -252,6 +252,8 @@ function PersonaDropdown() {
 
 /* ─── Main Dashboard ─────────────────────────────────────────────────────── */
 
+import { OnboardingGate } from "@/components/app/OnboardingGate";
+
 function DashboardInner() {
   const { currentUser, switchByEmail } = useStore();
   const { user, signOut } = useAuth();
@@ -264,6 +266,11 @@ function DashboardInner() {
   }, [user?.email, switchByEmail]);
 
   const handleSignOut = async () => { await signOut(); navigate("/"); };
+
+  // ── Strict verification gate: block everything until verified ──
+  if (!currentUser.isVerified) {
+    return <OnboardingGate />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
