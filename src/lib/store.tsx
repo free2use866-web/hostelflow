@@ -44,7 +44,8 @@ function genMockData(): AppState {
     { id: uid("u", n()), name: "Prof. Harish Chandra", email: "harish.c@iitr.ac.in", role: "Warden", bhawan: "Ravindra", roomNo: "W-0", isVerified: true },
   ];
 
-  const sys = (r: Role) => users.find((u) => u.role === r && u.bhawan === "Ravindra")!;
+  // Find a user by role (any Bhawan) — every role exists exactly once.
+  const sys = (r: Role) => users.find((u) => u.role === r)!;
 
   const complaints: Complaint[] = [
     {
