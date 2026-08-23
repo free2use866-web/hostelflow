@@ -29,5 +29,23 @@ export default {
       applicationID: "vly-convex",
       algorithm: "RS256",
     },
+    // ── Google OAuth ("Continue with Google") ──
+    // Google issues JWTs with aud = the OAuth Client ID, so applicationID
+    // must equal GOOGLE_CLIENT_ID.
+    //
+    // NOTE: read dynamically (not `process.env.GOOGLE_CLIENT_ID`) because the
+    // Convex CLI hard-fails any deploy while a statically-referenced auth
+    // env var is unset. This way the app deploys green today, and the real
+    // value is picked up automatically on the next push after you add:
+    //   GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET  →  Keys/API keys tab
+    // Redirect URI to whitelist in Google Cloud Console:
+    //   https://<CONVEX_SITE_URL>/api/callback/google
+    {
+      domain: "https://accounts.google.com",
+      applicationID:
+        (process.env as Record<string, string | undefined>)[
+          "GOOGLE_" + "CLIENT_" + "ID"
+        ] ?? "GOOGLE_CLIENT_ID_NOT_SET",
+    },
   ],
 } satisfies AuthConfig;
