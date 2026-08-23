@@ -1,172 +1,170 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   BellRing,
+  Building2,
+  CheckCircle2,
   ClipboardList,
-  Eye,
-  QrCode,
-  Repeat,
-  UtensilsCrossed,
+  Shield,
+  Utensils,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
+import { useEffect, useState } from "react";
+
+/* ─── Flip Words ──────────────────────────────────────────────────────────── */
+
+const FLIP_WORDS = [
+  "No more lost complaints.",
+  "Mess menu at a glance.",
+  "Sick meals delivered fast.",
+  "Digital passes, zero paper.",
+  "Suggestions that reach the Warden.",
+  "Overdue tickets auto-escalated.",
+];
+
+function FlipWords() {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setIndex((i) => (i + 1) % FLIP_WORDS.length), 2800);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="inline-block h-[1.2em] overflow-hidden align-bottom">
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={index}
+          initial={{ y: 20, opacity: 0, filter: "blur(4px)" }}
+          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          exit={{ y: -20, opacity: 0, filter: "blur(4px)" }}
+          transition={{ duration: 0.45 }}
+          className="inline-block text-primary"
+        >
+          {FLIP_WORDS[index]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+/* ─── Staggered Text ─────────────────────────────────────────────────────── */
+
+function StaggerText({ text, className = "" }: { text: string; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <span className={className}>
+      {words.map((w, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, filter: "blur(0px)" }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.04, duration: 0.35 }}
+          className="inline-block mr-[0.3em]"
+        >
+          {w}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
+/* ─── Feature cards ──────────────────────────────────────────────────────── */
 
 const features = [
-  {
-    icon: QrCode,
-    title: "Mess Tokens in a tap",
-    desc: "Students generate meal tokens instantly — the mess secretary sees the day's count at a glance.",
-    tint: "bg-[oklch(0.89_0.075_168)] text-[oklch(0.38_0.06_170)]",
-  },
-  {
-    icon: ClipboardList,
-    title: "Complaints & suggestions",
-    desc: "File anything — mess, general, maintenance — and @mention the person who needs to know.",
-    tint: "bg-[oklch(0.9_0.075_55)] text-[oklch(0.4_0.07_50)]",
-  },
-  {
-    icon: Eye,
-    title: "Secy portals",
-    desc: "Every secretary gets a focused portal with only the complaints that belong to them.",
-    tint: "bg-[oklch(0.88_0.07_230)] text-[oklch(0.36_0.07_235)]",
-  },
-  {
-    icon: Repeat,
-    title: "Smart routing",
-    desc: "Wardens, assistant & chief wardens see all work, transfer complaints to the right secy, and track progress.",
-    tint: "bg-[oklch(0.89_0.075_350)] text-[oklch(0.4_0.08_350)]",
-  },
-  {
-    icon: BellRing,
-    title: "Mentions & notifications",
-    desc: "Whoever is mentioned in a complaint is notified instantly. Status changes ping the student too.",
-    tint: "bg-[oklch(0.87_0.09_295)] text-[oklch(0.38_0.09_295)]",
-  },
-  {
-    icon: UtensilsCrossed,
-    title: "Auto reminders",
-    desc: "Complaints left untagged or untouched for 48 hours get flagged so nothing slips through.",
-    tint: "bg-[oklch(0.92_0.05_120)] text-[oklch(0.4_0.07_130)]",
-  },
+  { icon: ClipboardList, title: "Smart Complaint Routing", desc: "File once — auto-routed to the right secretary based on category. Mess, maintenance, tech, sports, wellness, general." },
+  { icon: BellRing, title: "24-Hour Overdue Escalation", desc: "Complaints unresolved after 24h are flagged and surfaced directly to the Assistant Warden dashboard." },
+  { icon: Utensils, title: "Mess & Sick Diet", desc: "Weekly 3-meal schedule, sick meal requests delivered to your room, and mess rebate tracker with IITR rule compliance." },
+  { icon: Building2, title: "Community Board", desc: "Upvote hostel improvement proposals. Top-voted ideas automatically rank higher on the Warden dashboard." },
+  { icon: Shield, title: "Digital Passes", desc: "Late-night entry, sports equipment checkout, and guest stay approvals — all with digital sign-offs." },
+  { icon: CheckCircle2, title: "Cross-Secretary Coordination", desc: "Wardens and Assistant Wardens see all work, reassign tickets, and track progress across every secretary." },
 ];
 
-const roles = [
-  { emoji: "🎓", label: "Student" },
-  { emoji: "🍽️", label: "Mess Secy" },
-  { emoji: "📋", label: "General Secy" },
-  { emoji: "🔧", label: "Maintenance Secy" },
-  { emoji: "💡", label: "Suggestion Secy" },
-  { emoji: "🧑‍💼", label: "Assistant Warden" },
-  { emoji: "👨‍🍳", label: "Chief Warden" },
-  { emoji: "🛡️", label: "Warden" },
-];
+/* ─── Landing ────────────────────────────────────────────────────────────── */
 
 export default function Landing() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background">
-      {/* decorative blobs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-24 -left-24 size-96 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute top-1/3 -right-32 size-[28rem] rounded-full bg-secondary/30 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 size-80 rounded-full bg-accent/25 blur-3xl" />
-      </div>
-
-      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <div className="flex items-center gap-3">
-          <div className="clay-pressable flex size-12 items-center justify-center rounded-2xl bg-primary text-2xl shadow-[var(--clay-raised),var(--clay-inner)]">
-            🏠
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <div className="flex items-center gap-2.5">
+          <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-lg font-bold text-primary-foreground">
+            IITR
           </div>
-          <span className="text-lg font-extrabold tracking-tight">
-            HostelHub<span className="text-primary">·IITR</span>
+          <span className="font-bold tracking-tight text-foreground" style={{ fontFamily: "Lora, serif" }}>
+            HostelHub
           </span>
         </div>
-        <Link to="/auth">
-          <Button className="clay-flat clay-pressable rounded-full px-6 font-semibold">
-            Sign in
-          </Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link to="/auth">
+            <Button size="sm" className="rounded-full bg-primary px-5 font-semibold text-primary-foreground">
+              Sign In <ArrowRight className="ml-1.5 size-3.5" />
+            </Button>
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}
-      <section className="relative z-10 mx-auto max-w-6xl px-6 pt-14 pb-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="clay-inset inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium text-muted-foreground">
-            🔐 Exclusive to <strong>@iitr.ac.in</strong> accounts
-          </span>
-          <h1 className="mx-auto mt-8 max-w-3xl text-5xl leading-tight font-extrabold tracking-tight sm:text-6xl">
-            Your hostel,{" "}
-            <span className="text-primary">softly</span> organised.
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            Complaints, mess tokens, communities and secretary portals — one
-            squishy home for every warden, secy and student of an IIT Roorkee
-            hostel.
+      <section className="mx-auto max-w-6xl px-6 pt-16 pb-20 text-center">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/8 px-4 py-1.5 text-xs font-semibold tracking-wide text-primary">
+            🔐 Exclusive to @iitr.ac.in
           </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link to="/auth?mode=demo">
-              <Button
-                size="lg"
-                className="clay-flat clay-pressable h-14 rounded-full px-8 text-base font-bold"
-              >
-                Try Demo Mode <ArrowRight className="ml-2 size-5" />
-              </Button>
-            </Link>
+          <h1 className="mx-auto max-w-3xl text-4xl leading-tight font-bold text-foreground sm:text-5xl" style={{ fontFamily: "Lora, serif" }}>
+            The Hostel Management System{" "}
+            <br className="hidden sm:block" />
+            for <FlipWords />
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground" style={{ fontFamily: "Libre Baskerville, serif" }}>
+            One portal for complaints, mess, sick meals, digital passes, community suggestions and everything else — for every Bhawan at IIT Roorkee.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link to="/auth">
-              <Button
-                size="lg"
-                variant="outline"
-                className="clay-inset clay-pressable h-14 rounded-full border-none px-8 text-base font-semibold"
-              >
-                IITR Google sign-in
+              <Button size="lg" className="rounded-full bg-primary px-7 font-semibold text-primary-foreground">
+                Enter as Institute Member <ArrowRight className="ml-2 size-4" />
               </Button>
             </Link>
           </div>
         </motion.div>
 
-        {/* role chips */}
+        {/* Bhawan badges */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="mt-14 flex flex-wrap justify-center gap-3"
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="mt-10 flex flex-wrap justify-center gap-2"
         >
-          {roles.map((r) => (
-            <span
-              key={r.label}
-              className="clay-flat clay-pressable cursor-default rounded-full px-5 py-2.5 text-sm font-semibold"
-            >
-              {r.emoji} {r.label}
+          {["Ravindra", "Govind", "Cautley", "Rajendra", "Sarojini"].map((b) => (
+            <span key={b} className="rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-muted-foreground">
+              🏛️ {b}
             </span>
           ))}
         </motion.div>
       </section>
 
       {/* Features */}
-      <section className="relative z-10 mx-auto max-w-6xl px-6 pb-24">
-        <h2 className="mb-10 text-center text-3xl font-extrabold tracking-tight">
-          Everything a hostel needs
-        </h2>
-        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto max-w-6xl px-6 pb-20">
+        <StaggerText
+          text="Everything a Bhawan needs — in one place."
+          className="mb-8 block text-center text-2xl font-bold text-foreground"
+        />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f, i) => (
             <motion.div
               key={f.title}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.45, delay: i * 0.06 }}
-              className="clay-lg p-7"
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
+              className="rounded-xl border border-border bg-card p-6"
             >
-              <div
-                className={`flex size-14 items-center justify-center rounded-2xl shadow-[var(--clay-raised),var(--clay-inner)] ${f.tint}`}
-              >
-                <f.icon className="size-6" />
+              <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <f.icon className="size-5" />
               </div>
-              <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              <h3 className="mb-2 font-bold text-foreground" style={{ fontFamily: "Lora, serif" }}>
+                {f.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 {f.desc}
               </p>
             </motion.div>
@@ -175,36 +173,38 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="relative z-10 mx-auto max-w-4xl px-6 pb-24">
-        <div className="clay-lg p-10 text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight">
-            How a complaint travels
+      <section className="mx-auto max-w-4xl px-6 pb-20">
+        <div className="rounded-xl border border-border bg-card p-8 text-center">
+          <h2 className="mb-8 text-2xl font-bold text-foreground" style={{ fontFamily: "Lora, serif" }}>
+            How a complaint flows
           </h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-4">
             {[
-              ["📝", "Student files", "Pick a community, describe it, @mention anyone."],
-              ["📥", "Secy portal", "It lands in the right secretary's queue instantly."],
-              ["🔁", "Route it", "Wardens can transfer it to another secy if misfiled."],
-              ["✅", "Resolve", "Mark in-progress, resolved, or rejected — student is notified."],
+              ["📝", "Student files", "Pick a category, describe it."],
+              ["🔀", "Auto-routed", "Lands with the right secretary instantly."],
+              ["⏰", "24h escalation", "Unresolved? Flagged to the Asst. Warden."],
+              ["✅", "Resolved", "Status updated, student notified."],
             ].map(([emoji, title, desc], i) => (
               <div key={title}>
-                <div className="clay mx-auto flex size-16 items-center justify-center rounded-3xl text-2xl">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.35 }}
+                  className="mx-auto mb-3 flex size-14 items-center justify-center rounded-full border border-border bg-background text-2xl"
+                >
                   {emoji}
-                </div>
-                <p className="mt-4 font-bold">
-                  {i + 1}. {title}
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  {desc}
-                </p>
+                </motion.div>
+                <p className="font-semibold text-foreground">{title}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <footer className="relative z-10 border-t border-border/50 py-8 text-center text-sm text-muted-foreground">
-        Built for hostel life at IIT Roorkee · HostelHub ·IITR
+      <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
+        HostelHub · IIT Roorkee — Bhawan Administration & HAC
       </footer>
     </div>
   );

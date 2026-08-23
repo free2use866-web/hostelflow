@@ -42,134 +42,79 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* CLAYMORPHISM THEME VALUES */
-:root {
-  --radius: 1.375rem;
-  --background: oklch(0.957 0.032 302);
-  --foreground: oklch(0.36 0.07 300);
-  --card: oklch(0.985 0.014 305);
-  --card-foreground: oklch(0.36 0.07 300);
-  --popover: oklch(0.985 0.014 305);
-  --popover-foreground: oklch(0.36 0.07 300);
-  --primary: oklch(0.64 0.17 295);
-  --primary-foreground: oklch(0.99 0.01 300);
-  --secondary: oklch(0.89 0.075 168);
-  --secondary-foreground: oklch(0.38 0.06 170);
-  --muted: oklch(0.93 0.026 302);
-  --muted-foreground: oklch(0.52 0.05 300);
-  --accent: oklch(0.9 0.075 55);
-  --accent-foreground: oklch(0.4 0.07 50);
-  --destructive: oklch(0.66 0.19 25);
-  --border: oklch(0.91 0.04 302);
-  --input: oklch(0.94 0.03 302);
-  --ring: oklch(0.64 0.17 295);
-  --chart-1: oklch(0.64 0.17 295);
-  --chart-2: oklch(0.72 0.13 168);
-  --chart-3: oklch(0.78 0.13 65);
-  --chart-4: oklch(0.7 0.14 350);
-  --chart-5: oklch(0.72 0.12 230);
-  --sidebar: oklch(0.97 0.022 303);
-  --sidebar-foreground: oklch(0.36 0.07 300);
-  --sidebar-primary: oklch(0.64 0.17 295);
-  --sidebar-primary-foreground: oklch(0.99 0.01 300);
-  --sidebar-accent: oklch(0.92 0.04 302);
-  --sidebar-accent-foreground: oklch(0.36 0.07 300);
-  --sidebar-border: oklch(0.91 0.04 302);
-  --sidebar-ring: oklch(0.64 0.17 295);
+/* WARM EDITORIAL EARTH-TONE THEME */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
-  /* Clay shadows */
-  --clay-base: 232 20% 72%;
-  --clay-raised:
-    12px 12px 26px hsl(var(--clay-base) / 0.42),
-    -8px -8px 18px hsl(0 0% 100% / 0.9);
-  --clay-raised-lg:
-    18px 18px 40px hsl(var(--clay-base) / 0.45),
-    -10px -10px 22px hsl(0 0% 100% / 0.95);
-  --clay-inner:
-    inset 0 8px 16px hsl(0 0% 100% / 0.85),
-    inset 0 -8px 14px hsl(var(--clay-base) / 0.32);
-  --clay-pressed:
-    inset 6px 6px 14px hsl(var(--clay-base) / 0.45),
-    inset -4px -4px 10px hsl(0 0% 100% / 0.85);
+:root {
+  --radius: 0.75rem;
+  --background: #f5f1e6;
+  --foreground: #4a3f35;
+  --card: #fffcf5;
+  --card-foreground: #4a3f35;
+  --popover: #fffcf5;
+  --popover-foreground: #4a3f35;
+  --primary: #a67c52;
+  --primary-foreground: #ffffff;
+  --secondary: #e2d8c3;
+  --secondary-foreground: #5c4d3f;
+  --muted: #ece5d8;
+  --muted-foreground: #7d6b56;
+  --accent: #d4c8aa;
+  --accent-foreground: #4a3f35;
+  --destructive: #b54a35;
+  --destructive-foreground: #ffffff;
+  --border: #dbd0ba;
+  --input: #dbd0ba;
+  --ring: #a67c52;
+  --sidebar: #fffcf5;
+  --sidebar-foreground: #4a3f35;
+  --sidebar-primary: #a67c52;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ece5d8;
+  --sidebar-accent-foreground: #4a3f35;
+  --sidebar-border: #dbd0ba;
+  --sidebar-ring: #a67c52;
 }
 
 .dark {
-  --background: oklch(0.24 0.045 300);
-  --foreground: oklch(0.95 0.02 305);
-  --card: oklch(0.3 0.05 300);
-  --card-foreground: oklch(0.95 0.02 305);
-  --popover: oklch(0.3 0.05 300);
-  --popover-foreground: oklch(0.95 0.02 305);
-  --primary: oklch(0.74 0.15 295);
-  --primary-foreground: oklch(0.24 0.05 300);
-  --secondary: oklch(0.45 0.07 170);
-  --secondary-foreground: oklch(0.95 0.02 305);
-  --muted: oklch(0.34 0.045 300);
-  --muted-foreground: oklch(0.75 0.04 300);
-  --accent: oklch(0.48 0.08 55);
-  --accent-foreground: oklch(0.95 0.02 305);
-  --destructive: oklch(0.66 0.19 25);
-  --border: oklch(0.4 0.05 300);
-  --input: oklch(0.36 0.05 300);
-  --ring: oklch(0.74 0.15 295);
-  --chart-1: oklch(0.74 0.15 295);
-  --chart-2: oklch(0.72 0.13 168);
-  --chart-3: oklch(0.78 0.13 65);
-  --chart-4: oklch(0.7 0.14 350);
-  --chart-5: oklch(0.72 0.12 230);
-  --sidebar: oklch(0.27 0.05 300);
-  --sidebar-foreground: oklch(0.95 0.02 305);
-  --sidebar-primary: oklch(0.74 0.15 295);
-  --sidebar-primary-foreground: oklch(0.24 0.05 300);
-  --sidebar-accent: oklch(0.36 0.05 300);
-  --sidebar-accent-foreground: oklch(0.95 0.02 305);
-  --sidebar-border: oklch(0.4 0.05 300);
-  --sidebar-ring: oklch(0.74 0.15 295);
-
-  --clay-base: 290 25% 14%;
-  --clay-raised:
-    12px 12px 26px hsl(var(--clay-base) / 0.8),
-    -6px -6px 16px hsl(0 0% 100% / 0.06);
-  --clay-raised-lg:
-    18px 18px 40px hsl(var(--clay-base) / 0.85),
-    -8px -8px 18px hsl(0 0% 100% / 0.08);
-  --clay-inner:
-    inset 0 8px 16px hsl(0 0% 100% / 0.08),
-    inset 0 -8px 14px hsl(var(--clay-base) / 0.6);
-  --clay-pressed:
-    inset 6px 6px 14px hsl(var(--clay-base) / 0.7),
-    inset -4px -4px 10px hsl(0 0% 100% / 0.05);
+  --background: #2d2621;
+  --foreground: #ece5d8;
+  --card: #3a322c;
+  --card-foreground: #ece5d8;
+  --popover: #3a322c;
+  --popover-foreground: #ece5d8;
+  --primary: #c0a080;
+  --primary-foreground: #2d2621;
+  --secondary: #4a4039;
+  --secondary-foreground: #ece5d8;
+  --muted: #312b26;
+  --muted-foreground: #c5bcac;
+  --accent: #59493e;
+  --accent-foreground: #ece5d8;
+  --destructive: #b54a35;
+  --destructive-foreground: #ffffff;
+  --border: #4a4039;
+  --input: #4a4039;
+  --ring: #c0a080;
+  --sidebar: #3a322c;
+  --sidebar-foreground: #ece5d8;
+  --sidebar-primary: #c0a080;
+  --sidebar-primary-foreground: #2d2621;
+  --sidebar-accent: #4a4039;
+  --sidebar-accent-foreground: #ece5d8;
+  --sidebar-border: #4a4039;
+  --sidebar-ring: #c0a080;
 }
 
-@layer utilities {
-  .clay {
-    border-radius: calc(var(--radius) + 0.5rem);
-    background-color: var(--card);
-    box-shadow: var(--clay-raised), var(--clay-inner);
+@layer base {
+  body {
+    font-family: 'Libre Baskerville', serif;
   }
-  .clay-lg {
-    border-radius: calc(var(--radius) + 1rem);
-    background-color: var(--card);
-    box-shadow: var(--clay-raised-lg), var(--clay-inner);
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lora', serif;
   }
-  .clay-flat {
-    border-radius: calc(var(--radius) + 0.25rem);
-    background-color: var(--card);
-    box-shadow: var(--clay-raised);
-  }
-  .clay-inset {
-    border-radius: calc(var(--radius) - 0.25rem);
-    background-color: var(--input);
-    box-shadow: var(--clay-pressed);
-  }
-  .clay-pressable {
-    transition:
-      transform 140ms ease,
-      box-shadow 140ms ease;
-  }
-  .clay-pressable:active:not(:disabled) {
-    transform: scale(0.97);
-    box-shadow: var(--clay-pressed);
+  code, pre, .font-mono {
+    font-family: 'IBM Plex Mono', monospace;
   }
 }
 
