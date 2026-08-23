@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
+import { uploadMedicalSlip, isSupabaseConfigured } from "@/lib/supabase";
 import type { MealType, SickDietStatus, RebateStatus } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -134,6 +135,12 @@ export function MessView() {
                     </span>
                   </div>
                   <p className="mt-2 text-sm text-muted-foreground">{r.message}</p>
+                  {r.medicalProofUrl && (
+                    <a href={r.medicalProofUrl} target="_blank" rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+                      📎 View medical slip
+                    </a>
+                  )}
                   {r.deliveredBy && (
                     <p className="mt-1 text-xs text-emerald-700">Delivered by: {r.deliveredBy}</p>
                   )}
@@ -205,11 +212,25 @@ function SickDietForm({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
   const [meal, setMeal] = useState<MealType>("Lunch");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [msg, setMsg] = useState("");
+  const [slip, setSlip] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
-  const submit = () => {
+  const submit = async () => {
     if (!msg.trim()) return;
-    addSickDietRequest({ studentId: currentUser.id, roomNo: currentUser.roomNo, bhawan: currentUser.bhawan, date, mealType: meal, message: msg.trim() });
-    setMsg(""); onOpenChange(false);
+    setUploading(true);
+    let medicalProofUrl: string | undefined;
+    try {
+      if (slip) {
+        medicalProofUrl = await uploadMedicalSlip(slip); // Supabase Storage
+      }
+      addSickDietRequest({ studentId: currentUser.id, roomNo: currentUser.roomNo, bhawan: currentUser.bhawan, date, mealType: meal, message: msg.trim(), medicalProofUrl });
+      setMsg(""); setSlip(null);
+      onOpenChange(false);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Failed to upload medical slip.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -232,11 +253,24 @@ function SickDietForm({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
           <Input type="date" value={date} min={new Date().toISOString().slice(0, 10)}
             onChange={(e) => setDate(e.target.value)} className="rounded-lg border-border" />
           <Textarea placeholder="Message (e.g. need khichdi, running fever)" rows={3} value={msg} onChange={(e) => setMsg(e.target.value)} className="rounded-lg border-border text-sm" />
+
+          {isSupabaseConfigured && (
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-muted-foreground">
+                Medical slip (optional — uploaded to Supabase Storage)
+              </label>
+              <Input type="file" accept="image/*,.pdf"
+                onChange={(e) => setSlip(e.target.files?.[0] ?? null)}
+                className="rounded-lg border-border text-xs" />
+              {slip && <p className="mt-1 text-[10px] text-muted-foreground">{slip.name}</p>}
+            </div>
+          )}
+
           <p className="text-[10px] text-muted-foreground">
             Alerts will be sent to Mess Secretary & Wellness Secretary. Your roommates will also be notified.
           </p>
-          <Button onClick={submit} className="w-full rounded-full bg-primary text-primary-foreground" disabled={!msg.trim()}>
-            Submit Request
+          <Button onClick={submit} className="w-full rounded-full bg-primary text-primary-foreground" disabled={!msg.trim() || uploading || (!!slip && uploading)}>
+            {uploading ? "Uploading…" : "Submit Request"}
           </Button>
         </div>
       </DialogContent>
