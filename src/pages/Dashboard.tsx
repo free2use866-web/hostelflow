@@ -253,6 +253,7 @@ function PersonaDropdown() {
 /* ─── Main Dashboard ─────────────────────────────────────────────────────── */
 
 import { OnboardingGate } from "@/components/app/OnboardingGate";
+import { isValidIITREmail } from "@/lib/academic-identity";
 
 function DashboardInner() {
   const { currentUser, switchByEmail } = useStore();
@@ -264,6 +265,17 @@ function DashboardInner() {
   useEffect(() => {
     if (user?.email) switchByEmail(user.email);
   }, [user?.email, switchByEmail]);
+
+  // ── Defense-in-depth domain guard (blueprint Step 1): if a non-IITR
+  // account ever reaches the dashboard (e.g. whitelist edge cases), kick it
+  // out immediately. Primary enforcement is server-side in convex/auth.ts.
+  useEffect(() => {
+    if (user?.email && !isValidIITREmail(user.email)) {
+      signOut()
+        .then(() => navigate("/?error=domain_restricted", { replace: true }))
+        .catch(() => {});
+    }
+  }, [user?.email, signOut, navigate]);
 
   const handleSignOut = async () => { await signOut(); navigate("/"); };
 
