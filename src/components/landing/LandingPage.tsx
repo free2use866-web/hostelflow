@@ -648,7 +648,7 @@ function MockWindow() {
                 {rpm.toLocaleString()}
               </p>
             </div>
-            <AnimatePresence mode="popLayout" initial={false}>
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={tab}
                 initial={{ opacity: 0, y: 8 }}
@@ -721,8 +721,6 @@ function LogoMark() {
 }
 
 function Header(props: {
-  theme: Theme;
-  onToggleTheme: () => void;
   onOpenMobile: () => void;
   onContact: () => void;
   activeId: string;
@@ -806,9 +804,7 @@ function Header(props: {
           </button>
         </div>
       </nav>
-      {/* theme toggle lives in the mobile sheet; keep prop wiring honest */}
-      <span className="hidden" data-theme={props.theme}>{props.theme}</span>
-      <span className="hidden">{String(props.onToggleTheme === undefined)}</span>
+
     </header>
   );
 }
@@ -1391,7 +1387,7 @@ function PricingSection({ onSelectPlan }: { onSelectPlan: (plan: string) => void
                   <span className="text-4xl font-semibold tracking-tight text-[var(--lp-text)]">Custom</span>
                 ) : (
                   <>
-                    <AnimatePresence mode="popLayout" initial={false}>
+                    <AnimatePresence mode="wait" initial={false}>
                       <motion.span
                         key={yearly ? `${tier.name}-y` : `${tier.name}-m`}
                         initial={{ opacity: 0, y: 10 }}
@@ -1977,6 +1973,13 @@ function LegalDialog({ kind, onClose }: { kind: LegalKind; onClose: () => void }
 /* Contact / sales dialog                                                      */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
+interface ContactFormState {
+  name: string;
+  email: string;
+  size: string;
+  message: string;
+}
+
 interface FieldErrors {
   name?: string;
   email?: string;
@@ -2044,10 +2047,9 @@ function ContactDialog({
     }, 900);
   };
 
-  if (!open) return null;
-
   return (
     <AnimatePresence>
+      {open && (
       <DialogShell id="contact-title" title={planHint ? `Talk to sales — ${planHint}` : "Talk to sales"} onClose={onClose}>
         {status === "success" ? (
           <motion.div
@@ -2175,6 +2177,7 @@ function ContactDialog({
           </form>
         )}
       </DialogShell>
+      )}
     </AnimatePresence>
   );
 }
@@ -2243,8 +2246,6 @@ export default function LandingPage() {
       </a>
 
       <Header
-        theme={theme}
-        onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
         onOpenMobile={() => setMobileOpen(true)}
         onContact={() => setContact({ open: true, plan: null })}
         activeId={activeId}
