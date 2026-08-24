@@ -7,7 +7,7 @@ import type {
 } from "./types";
 import { CATEGORY_TO_ROLE, BHAWANS, ALL_CATEGORIES } from "./types";
 
-const STORAGE_KEY = "iitr-hms-v4";
+const STORAGE_KEY = "iitr-hms-v5";
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function uid(prefix: string, n: number): string {
@@ -418,7 +418,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // Ensure new fields exist for old localStorage data
+        return {
+          ...parsed,
+          notices: parsed.notices ?? [],
+          groupMessages: parsed.groupMessages ?? [],
+        };
+      }
     } catch {}
     const fresh = genMockData();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
