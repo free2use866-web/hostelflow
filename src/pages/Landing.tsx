@@ -88,9 +88,7 @@ export default function Landing() {
       {/* Header */}
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2.5">
-          <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-lg font-bold text-primary-foreground">
-            IITR
-          </div>
+          <img src="/src/assets/logo.svg" alt="HostelHub" className="size-10" />
           <span className="font-bold tracking-tight text-foreground" style={{ fontFamily: "Lora, serif" }}>
             HostelHub
           </span>

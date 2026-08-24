@@ -3,6 +3,7 @@ import type {
   User, Complaint, SickDietRequest, MessMenu, Suggestion,
   Rebate, Pass, Role, Bhawan, Category, AppState,
   ComplaintStatus, PassType, MealType, SuggestionStatus, RebateStatus, PassStatus, SickDietStatus,
+  Notice, GroupMessage,
 } from "./types";
 import { CATEGORY_TO_ROLE, BHAWANS, ALL_CATEGORIES } from "./types";
 
@@ -309,9 +310,58 @@ function genMockData(): AppState {
     [users[8].id]: ["Technical"],
   };
 
+  const notices: Notice[] = [
+    {
+      id: uid("nt", n()), authorId: users[17].id, bhawan: "Ravindra",
+      title: "Water Tank Maintenance — Sunday 6 AM to 10 AM",
+      body: "The overhead tank will be cleaned and serviced this Sunday. Please store sufficient water on Saturday night. Sorry for the inconvenience.",
+      pinned: true, createdAt: hoursAgo(8),
+    },
+    {
+      id: uid("nt", n()), authorId: users[16].id, bhawan: "Ravindra",
+      title: "Wi-Fi Upgrade Scheduled — Thursday Night",
+      body: "Bandwidth will increase from 100 Mbps to 1 Gbps per floor. Expect a 30-minute outage between 11 PM and 12 AM on Thursday.",
+      pinned: false, createdAt: hoursAgo(48),
+    },
+    {
+      id: uid("nt", n()), authorId: users[17].id, bhawan: "Ravindra",
+      title: "Mid-Sem Exam Mess Timings Extended",
+      body: "During mid-sem exams (Sep 15–25), dinner will be served till 10:30 PM. Please carry your ID card.",
+      pinned: false, createdAt: hoursAgo(120),
+    },
+  ];
+
+  const groupMessages: GroupMessage[] = [
+    {
+      id: uid("gm", n()), authorId: users[17].id,
+      text: "Team, let's discuss the upcoming Parents' Day logistics. MessSec, can you prepare the catering plan?",
+      createdAt: hoursAgo(6),
+    },
+    {
+      id: uid("gm", n()), authorId: users[10].id,
+      text: "Sure, Prof. Chandra. I'll have the menu ready by tomorrow. Should we keep it vegetarian-only?",
+      createdAt: hoursAgo(5),
+    },
+    {
+      id: uid("gm", n()), authorId: users[16].id,
+      text: "I'll handle the Wi-Fi setup for the guest area. Need 2 access points near the auditorium.",
+      createdAt: hoursAgo(4),
+    },
+    {
+      id: uid("gm", n()), authorId: users[11].id,
+      text: "Geyser repair in Block C is done. 12 rooms affected, all working now.",
+      createdAt: hoursAgo(3),
+    },
+    {
+      id: uid("gm", n()), authorId: users[15].id,
+      text: "Reminder: Sports council meeting at 4 PM today. Tushar, you joining?",
+      createdAt: hoursAgo(2),
+    },
+  ];
+
   return {
     users, complaints, sickDietRequests, messMenus, suggestions, rebates, passes,
-    specialAnnouncements, joinedBy, currentUserId: users[0].id, nextId: next + 100,
+    specialAnnouncements, joinedBy, notices, groupMessages, currentUserId: users[0].id, nextId: next + 100,
   };
 }
 
@@ -348,6 +398,18 @@ interface StoreContextType extends AppState {
 
   addPass: (p: Omit<Pass, "id" | "status" | "approvedBy" | "createdAt">) => void;
   updatePassStatus: (id: string, status: PassStatus, approvedBy?: string) => void;
+
+  // ── Admin ──
+  assignRole: (userId: string, newRole: Role, newBhawan?: Bhawan) => void;
+  revokeRole: (userId: string) => void;
+  addUser: (data: { name: string; email: string; role: Role; bhawan: Bhawan; roomNo: string }) => void;
+
+  // ── Notices ──
+  addNotice: (n: Omit<Notice, "id" | "createdAt">) => void;
+  deleteNotice: (id: string) => void;
+
+  // ── Group Chat ──
+  sendGroupMessage: (text: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -655,6 +717,58 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [patch]);
 
+  // ─── Admin (role management) ──────────────────────────────────────────────
+  const assignRole: StoreContextType["assignRole"] = useCallback((userId, newRole, newBhawan) => {
+    patch((s) => ({
+      ...s,
+      users: s.users.map((u) =>
+        u.id === userId ? { ...u, role: newRole, ...(newBhawan ? { bhawan: newBhawan } : {}) } : u,
+      ),
+    }));
+  }, [patch]);
+
+  const revokeRole: StoreContextType["revokeRole"] = useCallback((userId) => {
+    patch((s) => ({
+      ...s,
+      users: s.users.map((u) =>
+        u.id === userId ? { ...u, role: "Student" as Role } : u,
+      ),
+    }));
+  }, [patch]);
+
+  const addUser: StoreContextType["addUser"] = useCallback((data) => {
+    patch((s) => ({
+      ...s,
+      users: [...s.users, { ...data, id: uid("u", s.nextId), isVerified: true }],
+      nextId: s.nextId + 1,
+    }));
+  }, [patch]);
+
+  // ─── Notices ──────────────────────────────────────────────────────────────
+  const addNotice: StoreContextType["addNotice"] = useCallback((data) => {
+    patch((s) => ({
+      ...s,
+      notices: [{ ...data, id: uid("nt", s.nextId), createdAt: nowISO() }, ...s.notices],
+      nextId: s.nextId + 1,
+    }));
+  }, [patch]);
+
+  const deleteNotice: StoreContextType["deleteNotice"] = useCallback((id) => {
+    patch((s) => ({
+      ...s,
+      notices: s.notices.filter((n) => n.id !== id),
+    }));
+  }, [patch]);
+
+  // ─── Group Chat ───────────────────────────────────────────────────────────
+  const sendGroupMessage: StoreContextType["sendGroupMessage"] = useCallback((text) => {
+    patch((s) => ({
+      ...s,
+      groupMessages: [...s.groupMessages, { id: uid("gm", s.nextId), authorId: s.currentUserId, text: text.trim(), createdAt: nowISO() }],
+      nextId: s.nextId + 1,
+    }));
+  }, [patch]);
+
   return (
     <StoreContext.Provider
       value={{
@@ -664,6 +778,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         addSuggestion, voteSuggestion, addSuggestionComment, voteComment, toggleJoin, updateSuggestionStatus,
         addRebate, updateRebateStatus,
         addPass, updatePassStatus,
+        assignRole, revokeRole, addUser,
+        addNotice, deleteNotice, sendGroupMessage,
       }}
     >
       {children}

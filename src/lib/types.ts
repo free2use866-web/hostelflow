@@ -237,6 +237,23 @@ export interface Pass {
   createdAt: string;
 }
 
+export interface Notice {
+  id: string;
+  authorId: string;
+  bhawan: Bhawan;
+  title: string;
+  body: string;
+  pinned: boolean;
+  createdAt: string;
+}
+
+export interface GroupMessage {
+  id: string;
+  authorId: string;
+  text: string;
+  createdAt: string;
+}
+
 export interface AppState {
   users: User[];
   complaints: Complaint[];
@@ -247,6 +264,8 @@ export interface AppState {
   passes: Pass[];
   specialAnnouncements: string[];
   joinedBy: Record<string, string[]>; // userId → joined community ids
+  notices: Notice[];
+  groupMessages: GroupMessage[];
   currentUserId: string;
   nextId: number;
 }

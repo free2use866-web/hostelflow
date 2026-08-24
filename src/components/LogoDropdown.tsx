@@ -1,5 +1,3 @@
-// simple logo dropdown component that can be used to go to the landing page or sign out for the user
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -36,7 +34,7 @@ export function LogoDropdown() {
         <Button variant="ghost" size="icon" className="h-10 w-10">
           <img
             src={logo}
-            alt="Logo"
+            alt="HostelHub"
             width={32}
             height={32}
             className="rounded-lg"

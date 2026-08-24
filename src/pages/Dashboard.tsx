@@ -17,6 +17,9 @@ import {
   UtensilsCrossed,
   ThumbsUp,
   KeyRound,
+  Shield,
+  Bell,
+  Users,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -31,6 +34,9 @@ import { ComplaintsView } from "@/components/app/ComplaintsView";
 import { MessView } from "@/components/app/MessView";
 import { CommunityView } from "@/components/app/CommunityView";
 import { PassesView } from "@/components/app/PassesView";
+import { AdminPortal } from "@/components/app/AdminPortal";
+import { ManagementGroup } from "@/components/app/ManagementGroup";
+import { NoticeBoard } from "@/components/app/NoticeBoard";
 import {
   WardenDashboard,
   SecyDashboard,
@@ -44,7 +50,10 @@ type ViewKey =
   | "complaints"
   | "mess"
   | "community"
-  | "passes";
+  | "passes"
+  | "admin"
+  | "group"
+  | "notices";
 
 const NAV_ITEMS: {
   key: ViewKey;
@@ -56,6 +65,9 @@ const NAV_ITEMS: {
   { key: "mess", label: "Mess & Diet", icon: UtensilsCrossed },
   { key: "community", label: "Community", icon: ThumbsUp },
   { key: "passes", label: "Digital Passes", icon: KeyRound },
+  { key: "notices", label: "Notice Board", icon: Bell },
+  { key: "group", label: "Management Group", icon: Users },
+  { key: "admin", label: "Admin Portal", icon: Shield },
 ];
 
 /* ─── Animated Tab Underline ─────────────────────────────────────────────── */
@@ -210,8 +222,16 @@ function DashboardInner() {
 
   const isWarden = IS_WARDEN_ROLE(currentUser.role);
   const isSecy = IS_SECY_ROLE(currentUser.role);
+  const canAccessGroup = isWarden || isSecy;
+  const canAccessAdmin = isWarden;
 
   const navigateToView = (k: string) => setView(k as ViewKey);
+
+  const visibleNav = NAV_ITEMS.filter((n) => {
+    if (n.key === "admin") return canAccessAdmin;
+    if (n.key === "group") return canAccessGroup;
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -219,9 +239,7 @@ function DashboardInner() {
       <div className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
-              IITR
-            </div>
+            <img src="/src/assets/logo.svg" alt="HostelHub" className="size-8" />
             <span
               className="hidden text-sm font-bold text-foreground sm:inline"
               style={{ fontFamily: "Lora, serif" }}
@@ -249,7 +267,7 @@ function DashboardInner() {
         {/* Navigation tabs */}
         <div className="mb-6 flex flex-wrap items-center gap-2">
           <AnimatedTabs
-            tabs={NAV_ITEMS.map((n) => ({
+            tabs={visibleNav.map((n) => ({
               key: n.key,
               label: n.label,
               icon: <n.icon className="size-3.5" />,
@@ -280,6 +298,9 @@ function DashboardInner() {
             {view === "mess" && <MessView />}
             {view === "community" && <CommunityView />}
             {view === "passes" && <PassesView />}
+            {view === "notices" && <NoticeBoard />}
+            {view === "group" && <ManagementGroup />}
+            {view === "admin" && <AdminPortal />}
           </motion.div>
         </AnimatePresence>
       </div>
