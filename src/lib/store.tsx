@@ -3,11 +3,11 @@ import type {
   User, Complaint, SickDietRequest, MessMenu, Suggestion,
   Rebate, Pass, Role, Bhawan, Category, AppState,
   ComplaintStatus, PassType, MealType, SuggestionStatus, RebateStatus, PassStatus, SickDietStatus,
-  Notice, GroupMessage,
+  Notice, GroupMessage, BhawanConfig,
 } from "./types";
 import { CATEGORY_TO_ROLE, BHAWANS, ALL_CATEGORIES } from "./types";
 
-const STORAGE_KEY = "iitr-hms-v5";
+const STORAGE_KEY = "iitr-hms-v6";
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function uid(prefix: string, n: number): string {
@@ -43,6 +43,7 @@ function genMockData(): AppState {
     { id: uid("u", n()), name: "Arjun Deshpande", email: "arjun.d@iitr.ac.in", role: "TechSec", bhawan: "Ravindra", roomNo: "C-401", enrollmentNumber: "23125018", enrollmentYear: 2023, branchCode: 125, branchName: "Data Science and Artificial Intelligence", academicYear: 3, isVerified: true },
     { id: uid("u", n()), name: "Pooja Saxena", email: "pooja.s@iitr.ac.in", role: "AsstWarden", bhawan: "Ravindra", roomNo: "W-1", isVerified: true },
     { id: uid("u", n()), name: "Prof. Harish Chandra", email: "harish.c@iitr.ac.in", role: "Warden", bhawan: "Ravindra", roomNo: "W-0", isVerified: true },
+    { id: uid("u", n()), name: "Dr. Anjali Bhatt", email: "anjali.b@iitr.ac.in", role: "SuperAdmin", bhawan: "Ravindra", roomNo: "Admin-1", isVerified: true },
   ];
 
   // Find a user by role (any Bhawan) — every role exists exactly once.
@@ -359,9 +360,17 @@ function genMockData(): AppState {
     },
   ];
 
+  const bhawanConfigs: BhawanConfig[] = [
+    { id: "bc-1", name: "Ravindra", active: true, capacity: 320, wardenEmail: "harish.c@iitr.ac.in", createdAt: "2024-01-01T00:00:00.000Z" },
+    { id: "bc-2", name: "Govind", active: true, capacity: 280, createdAt: "2024-01-01T00:00:00.000Z" },
+    { id: "bc-3", name: "Cautley", active: true, capacity: 260, createdAt: "2024-01-01T00:00:00.000Z" },
+    { id: "bc-4", name: "Rajendra", active: true, capacity: 300, createdAt: "2024-01-01T00:00:00.000Z" },
+    { id: "bc-5", name: "Sarojini", active: true, capacity: 240, createdAt: "2024-01-01T00:00:00.000Z" },
+  ];
+
   return {
     users, complaints, sickDietRequests, messMenus, suggestions, rebates, passes,
-    specialAnnouncements, joinedBy, notices, groupMessages, currentUserId: users[0].id, nextId: next + 100,
+    specialAnnouncements, joinedBy, notices, groupMessages, bhawanConfigs, currentUserId: users[0].id, nextId: next + 100,
   };
 }
 
@@ -410,6 +419,14 @@ interface StoreContextType extends AppState {
 
   // ── Group Chat ──
   sendGroupMessage: (text: string) => void;
+
+  // ── SuperAdmin ──
+  addBhawan: (name: string, capacity: number) => void;
+  toggleBhawanActive: (bhawanId: string) => void;
+  removeBhawan: (bhawanId: string) => void;
+  addGlobalAnnouncement: (text: string) => void;
+  removeGlobalAnnouncement: (index: number) => void;
+  deleteUser: (userId: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -425,6 +442,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           ...parsed,
           notices: parsed.notices ?? [],
           groupMessages: parsed.groupMessages ?? [],
+          bhawanConfigs: parsed.bhawanConfigs ?? [],
         };
       }
     } catch {}
@@ -777,6 +795,52 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [patch]);
 
+  // ─── SuperAdmin: Bhawan management ──────────────────────────────────────
+  const addBhawan: StoreContextType["addBhawan"] = useCallback((name, capacity) => {
+    patch((s) => ({
+      ...s,
+      bhawanConfigs: [...s.bhawanConfigs, { id: uid("bc", s.nextId), name: name.trim(), active: true, capacity, createdAt: nowISO() }],
+      nextId: s.nextId + 1,
+    }));
+  }, [patch]);
+
+  const toggleBhawanActive: StoreContextType["toggleBhawanActive"] = useCallback((bhawanId) => {
+    patch((s) => ({
+      ...s,
+      bhawanConfigs: s.bhawanConfigs.map((bc) =>
+        bc.id === bhawanId ? { ...bc, active: !bc.active } : bc,
+      ),
+    }));
+  }, [patch]);
+
+  const removeBhawan: StoreContextType["removeBhawan"] = useCallback((bhawanId) => {
+    patch((s) => ({
+      ...s,
+      bhawanConfigs: s.bhawanConfigs.filter((bc) => bc.id !== bhawanId),
+    }));
+  }, [patch]);
+
+  const addGlobalAnnouncement: StoreContextType["addGlobalAnnouncement"] = useCallback((text) => {
+    patch((s) => ({
+      ...s,
+      specialAnnouncements: [text, ...s.specialAnnouncements],
+    }));
+  }, [patch]);
+
+  const removeGlobalAnnouncement: StoreContextType["removeGlobalAnnouncement"] = useCallback((index) => {
+    patch((s) => ({
+      ...s,
+      specialAnnouncements: s.specialAnnouncements.filter((_, i) => i !== index),
+    }));
+  }, [patch]);
+
+  const deleteUser: StoreContextType["deleteUser"] = useCallback((userId) => {
+    patch((s) => ({
+      ...s,
+      users: s.users.filter((u) => u.id !== userId),
+    }));
+  }, [patch]);
+
   return (
     <StoreContext.Provider
       value={{
@@ -788,6 +852,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         addPass, updatePassStatus,
         assignRole, revokeRole, addUser,
         addNotice, deleteNotice, sendGroupMessage,
+        addBhawan, toggleBhawanActive, removeBhawan,
+        addGlobalAnnouncement, removeGlobalAnnouncement, deleteUser,
       }}
     >
       {children}

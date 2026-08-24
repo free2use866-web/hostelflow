@@ -8,6 +8,7 @@ import {
   ROLE_LABELS,
   IS_WARDEN_ROLE,
   IS_SECY_ROLE,
+  IS_SUPERADMIN,
 } from "@/lib/types";
 import {
   ChevronDown,
@@ -35,6 +36,7 @@ import { MessView } from "@/components/app/MessView";
 import { CommunityView } from "@/components/app/CommunityView";
 import { PassesView } from "@/components/app/PassesView";
 import { AdminPortal } from "@/components/app/AdminPortal";
+import { CentralAdmin } from "@/components/app/CentralAdmin";
 import { ManagementGroup } from "@/components/app/ManagementGroup";
 import { NoticeBoard } from "@/components/app/NoticeBoard";
 import {
@@ -222,8 +224,9 @@ function DashboardInner() {
 
   const isWarden = IS_WARDEN_ROLE(currentUser.role);
   const isSecy = IS_SECY_ROLE(currentUser.role);
-  const canAccessGroup = isWarden || isSecy;
-  const canAccessAdmin = isWarden;
+  const isSuperAdmin = IS_SUPERADMIN(currentUser.role);
+  const canAccessGroup = isWarden || isSecy || isSuperAdmin;
+  const canAccessAdmin = isWarden || isSuperAdmin;
 
   const navigateToView = (k: string) => setView(k as ViewKey);
 
@@ -287,7 +290,9 @@ function DashboardInner() {
             transition={{ duration: 0.2 }}
           >
             {view === "overview" &&
-              (isWarden ? (
+              (isSuperAdmin ? (
+                <CentralAdmin />
+              ) : isWarden ? (
                 <WardenDashboard onNavigate={navigateToView} />
               ) : isSecy ? (
                 <SecyDashboard onNavigate={navigateToView} />

@@ -7,7 +7,8 @@ export type Role =
   | "WellnessSec"
   | "TechSec"
   | "AsstWarden"
-  | "Warden";
+  | "Warden"
+  | "SuperAdmin";
 
 export type Bhawan = "Ravindra" | "Govind" | "Cautley" | "Rajendra" | "Sarojini";
 
@@ -43,6 +44,7 @@ export const ROLE_LABELS: Record<Role, string> = {
   TechSec: "Technical Secretary",
   AsstWarden: "Assistant Warden",
   Warden: "Warden / Chief Warden",
+  SuperAdmin: "Institute Admin",
 };
 
 export const CATEGORY_TO_ROLE: Record<Category, Role> = {
@@ -73,6 +75,7 @@ export const ALL_ROLES: Role[] = [
   "TechSec",
   "AsstWarden",
   "Warden",
+  "SuperAdmin",
 ];
 
 export const BHAWANS: Bhawan[] = [
@@ -82,6 +85,8 @@ export const BHAWANS: Bhawan[] = [
   "Rajendra",
   "Sarojini",
 ];
+
+export const IS_SUPERADMIN = (r: Role) => r === "SuperAdmin";
 
 export const IS_WARDEN_ROLE = (r: Role) =>
   r === "Warden" || r === "AsstWarden";
@@ -254,6 +259,15 @@ export interface GroupMessage {
   createdAt: string;
 }
 
+export interface BhawanConfig {
+  id: string;
+  name: string;
+  active: boolean;
+  capacity: number;
+  wardenEmail?: string;
+  createdAt: string;
+}
+
 export interface AppState {
   users: User[];
   complaints: Complaint[];
@@ -266,6 +280,7 @@ export interface AppState {
   joinedBy: Record<string, string[]>; // userId → joined community ids
   notices: Notice[];
   groupMessages: GroupMessage[];
+  bhawanConfigs: BhawanConfig[];
   currentUserId: string;
   nextId: number;
 }
