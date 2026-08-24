@@ -5,9 +5,42 @@ import type {
   ComplaintStatus, PassType, MealType, SuggestionStatus, RebateStatus, PassStatus, SickDietStatus,
   Notice, GroupMessage, BhawanConfig,
 } from "./types";
-import { CATEGORY_TO_ROLE, BHAWANS, ALL_CATEGORIES } from "./types";
+import { CATEGORY_TO_ROLE, BHAWANS, ALL_CATEGORIES, localYYYYMMDD } from "./types";
 
 const STORAGE_KEY = "iitr-hms-v6";
+// SECURITY/INTEGRITY: persisted snapshots carry a schema version. Anything we
+// can't structurally validate (tampered via DevTools, corrupt partial write,
+// stale shape after a deploy) is DISCARDED and reseeded instead of crashing
+// dozens of unguarded consumers downstream.
+const SCHEMA_VERSION = 7;
+
+type PersistedState = AppState & { schemaVersion?: number };
+
+function loadPersisted(): AppState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as PersistedState;
+    const isArr = (x: unknown): x is unknown[] => Array.isArray(x);
+    if (
+      p?.schemaVersion !== SCHEMA_VERSION ||
+      !isArr(p.users) ||
+      !isArr(p.complaints) ||
+      !isArr(p.passes) ||
+      !isArr(p.notices) ||
+      !isArr(p.groupMessages) ||
+      !isArr(p.bhawanConfigs) ||
+      !isArr(p.specialAnnouncements) ||
+      typeof p.currentUserId !== "string" ||
+      typeof p.nextId !== "number"
+    ) {
+      return null;
+    }
+    return p as AppState;
+  } catch {
+    return null; // malformed JSON ⇒ reseed, never crash on boot
+  }
+}
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function uid(prefix: string, n: number): string {
@@ -143,22 +176,22 @@ function genMockData(): AppState {
   const sickDietRequests: SickDietRequest[] = [
     {
       id: uid("sd", n()), studentId: users[0].id, roomNo: "B-201", bhawan: "Ravindra",
-      date: new Date().toISOString().slice(0, 10), mealType: "Dinner", message: "Running a fever. Need light khichdi please.",
+      date: localYYYYMMDD(), mealType: "Dinner", message: "Running a fever. Need light khichdi please.",
       status: "Requested", notifiedRoles: ["MessSec", "WellnessSec"],
     },
     {
       id: uid("sd", n()), studentId: users[2].id, roomNo: "A-112", bhawan: "Govind",
-      date: new Date().toISOString().slice(0, 10), mealType: "Lunch", message: "Recovering from food poisoning. Need dalia.",
+      date: localYYYYMMDD(), mealType: "Lunch", message: "Recovering from food poisoning. Need dalia.",
       medicalProofUrl: "slip_112.pdf", status: "In Preparation", notifiedRoles: ["MessSec", "WellnessSec"],
     },
     {
       id: uid("sd", n()), studentId: users[6].id, roomNo: "A-108", bhawan: "Ravindra",
-      date: new Date(Date.now() + 86400000).toISOString().slice(0, 10), mealType: "Breakfast", message: "Sore throat — need warm porridge.",
+      date: localYYYYMMDD(new Date(Date.now() + 86400000)), mealType: "Breakfast", message: "Sore throat — need warm porridge.",
       status: "Requested", notifiedRoles: ["MessSec"],
     },
     {
       id: uid("sd", n()), studentId: users[5].id, roomNo: "B-401", bhawan: "Sarojini",
-      date: new Date().toISOString().slice(0, 10), mealType: "Dinner", message: "Stomach upset. Khichdi with curd please.",
+      date: localYYYYMMDD(), mealType: "Dinner", message: "Stomach upset. Khichdi with curd please.",
       status: "Delivered", deliveredBy: sys("MessSec").name, notifiedRoles: ["MessSec", "WellnessSec"],
     },
   ];
@@ -279,29 +312,31 @@ function genMockData(): AppState {
     {
       id: uid("p", n()), studentId: users[0].id, studentName: users[0].name, passType: "LateEntry",
       reason: "Coming back from IEEE conference. Train arrives at 11:45 PM.",
-      validDate: new Date(Date.now() + 86400000).toISOString().slice(0, 10), status: "Pending", createdAt: hoursAgo(5),
+      validDate: localYYYYMMDD(new Date(Date.now() + 86400000)), status: "Pending", createdAt: hoursAgo(5),
     },
     {
       id: uid("p", n()), studentId: users[2].id, studentName: users[2].name, passType: "SportsGear",
       reason: "Need cricket bat and ball for inter-bhawan tournament practice.",
-      validDate: new Date().toISOString().slice(0, 10), status: "Approved", approvedBy: sys("SportsSec").name, createdAt: hoursAgo(48),
+      validDate: localYYYYMMDD(), status: "Approved", approvedBy: sys("SportsSec").name, createdAt: hoursAgo(48),
     },
     {
       id: uid("p", n()), studentId: users[4].id, studentName: users[4].name, passType: "GuestStay",
       reason: "Parents visiting for campus placement week.",
-      validDate: new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 10), status: "Pending", createdAt: hoursAgo(12),
+      validDate: localYYYYMMDD(new Date(Date.now() + 2 * 86400000)), status: "Pending", createdAt: hoursAgo(12),
     },
     {
       id: uid("p", n()), studentId: users[6].id, studentName: users[6].name, passType: "LateEntry",
       reason: "Attending fests in Dehradun. Last bus at 10 PM.",
-      validDate: new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10), status: "Approved", approvedBy: sys("AsstWarden").name, createdAt: hoursAgo(24),
+      validDate: localYYYYMMDD(new Date(Date.now() + 3 * 86400000)), status: "Approved", approvedBy: sys("AsstWarden").name, createdAt: hoursAgo(24),
     },
   ];
 
+  // Announcements carry stable IDs so removal is identity-based, never
+  // positional (a stale index used to delete the wrong item).
   const specialAnnouncements = [
-    "🎉 Sanjhi Khushi Menu tonight: Veg Biryani, Raita, Gulab Jamun",
-    "📢 Water tank maintenance on Sunday 6 AM–10 AM. Store water in advance.",
-    "🏏 Inter-Bhawan Cricket Tournament starts next Monday. Register with your GenSec.",
+    { id: "an-1", text: "🎉 Sanjhi Khushi Menu tonight: Veg Biryani, Raita, Gulab Jamun" },
+    { id: "an-2", text: "📢 Water tank maintenance on Sunday 6 AM–10 AM. Store water in advance." },
+    { id: "an-3", text: "🏏 Inter-Bhawan Cricket Tournament starts next Monday. Register with your GenSec." },
   ];
 
   const joinedBy: Record<string, string[]> = {
@@ -371,6 +406,7 @@ function genMockData(): AppState {
   return {
     users, complaints, sickDietRequests, messMenus, suggestions, rebates, passes,
     specialAnnouncements, joinedBy, notices, groupMessages, bhawanConfigs, currentUserId: users[0].id, nextId: next + 100,
+    schemaVersion: SCHEMA_VERSION,
   };
 }
 
@@ -425,29 +461,24 @@ interface StoreContextType extends AppState {
   toggleBhawanActive: (bhawanId: string) => void;
   removeBhawan: (bhawanId: string) => void;
   addGlobalAnnouncement: (text: string) => void;
-  removeGlobalAnnouncement: (index: number) => void;
+  removeGlobalAnnouncement: (id: string) => void;
   deleteUser: (userId: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
+  // Versioned + structurally validated load. Corrupt or tampered snapshots
+  // are discarded (reseeded) instead of crashing on first render.
   const [state, setState] = useState<AppState>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        // Ensure new fields exist for old localStorage data
-        return {
-          ...parsed,
-          notices: parsed.notices ?? [],
-          groupMessages: parsed.groupMessages ?? [],
-          bhawanConfigs: parsed.bhawanConfigs ?? [],
-        };
-      }
-    } catch {}
+    const loaded = loadPersisted();
+    if (loaded) return loaded;
     const fresh = genMockData();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+    } catch (err) {
+      console.error("[store] initial persist failed:", err);
+    }
     return fresh;
   });
 
@@ -455,22 +486,55 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   stateRef.current = state;
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (err) {
+      // QuotaExceededError previously threw inside this effect on EVERY
+      // subsequent render → crash loop. Log and keep the app usable.
+      console.error("[store] persist failed:", err);
+    }
   }, [state]);
+
+  // Cross-tab consistency: when another tab writes, ADOPT its snapshot
+  // instead of blindly overwriting it on our next flush (last-write-wins
+  // used to silently erase the other tab's records — including records
+  // created with colliding sequential IDs).
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== STORAGE_KEY || e.newValue === null) return;
+      try {
+        const incoming = JSON.parse(e.newValue) as PersistedState;
+        if (incoming?.schemaVersion === SCHEMA_VERSION) {
+          setState(incoming);
+        }
+      } catch {
+        /* ignore malformed cross-tab payloads */
+      }
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const currentUser = state.users.find((u) => u.id === state.currentUserId) ?? state.users[0];
 
-  const genId = useCallback((prefix: string) => {
-    let id = 0;
-    setState((s) => { id = s.nextId; return { ...s, nextId: s.nextId + 1 }; });
-    return uid(prefix, id);
-  }, []);
+  // RACE FIX: the old implementation read `nextId` from inside a queued
+  // updater and returned it synchronously — two rapid calls got the SAME id
+  // while nextId jumped twice (TOCTOU duplicate keys). IDs minted outside
+  // React state are collision-proof; mutations that need sequence numbers
+  // still consume s.nextId atomically inside their own updater.
+  const genId = useCallback(
+    (prefix: string) => `${prefix}-${crypto.randomUUID()}`,
+    [],
+  );
 
   const switchUser = useCallback((userId: string) => {
     setState((s) => ({ ...s, currentUserId: userId }));
   }, []);
 
-  const switchByEmail = useCallback((email: string) => {
+  const switchByEmail = useCallback((rawEmail: string) => {
+    // Normalize case ONCE — mixed-case Google profiles otherwise fork
+    // duplicate accounts for the same person.
+    const email = rawEmail.toLowerCase().trim();
     setState((s) => {
       const match = s.users.find((u) => u.email === email);
       if (match) return { ...s, currentUserId: match.id };
@@ -823,22 +887,30 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const addGlobalAnnouncement: StoreContextType["addGlobalAnnouncement"] = useCallback((text) => {
     patch((s) => ({
       ...s,
-      specialAnnouncements: [text, ...s.specialAnnouncements],
+      // Identity-based storage: removal can never hit the wrong item.
+      specialAnnouncements: [{ id: uid("an", s.nextId), text }, ...s.specialAnnouncements],
+      nextId: s.nextId + 1,
     }));
   }, [patch]);
 
-  const removeGlobalAnnouncement: StoreContextType["removeGlobalAnnouncement"] = useCallback((index) => {
+  const removeGlobalAnnouncement: StoreContextType["removeGlobalAnnouncement"] = useCallback((id) => {
     patch((s) => ({
       ...s,
-      specialAnnouncements: s.specialAnnouncements.filter((_, i) => i !== index),
+      specialAnnouncements: s.specialAnnouncements.filter((a) => a.id !== id),
     }));
   }, [patch]);
 
   const deleteUser: StoreContextType["deleteUser"] = useCallback((userId) => {
-    patch((s) => ({
-      ...s,
-      users: s.users.filter((u) => u.id !== userId),
-    }));
+    patch((s) => {
+      const users = s.users.filter((u) => u.id !== userId);
+      return {
+        ...s,
+        users,
+        // Never leave currentUserId pointing at a deleted user — the
+        // fallback chain below assumes it always resolves to a live row.
+        currentUserId: s.currentUserId === userId ? users[0]?.id ?? "" : s.currentUserId,
+      };
+    });
   }, [patch]);
 
   return (

@@ -8,6 +8,7 @@ import {
   IS_WARDEN_ROLE,
   ROLE_LABELS,
   STATUS_COLORS,
+  isOverdueNow,
   scoreOf,
   timeAgo,
 } from "@/lib/types";
@@ -143,7 +144,8 @@ export function WardenDashboard({
   const active = complaints.filter(
     (c) => c.status === "Pending" || c.status === "Under Progress",
   );
-  const overdue = active.filter((c) => c.isOverdue);
+  // Derived at read time — the persisted flag is frozen at creation and lies.
+  const overdue = active.filter((c) => isOverdueNow(c));
   const pendingPasses = passes.filter((p) => p.status === "Pending");
   const activeSick = sickDietRequests.filter(
     (r) => r.status === "Requested" || r.status === "In Preparation",
@@ -275,12 +277,7 @@ export function WardenDashboard({
                 const done = catComplaints.filter(
                   (c) => c.status === "Resolved",
                 ).length;
-                const od = catComplaints.filter(
-                  (c) =>
-                    c.isOverdue &&
-                    c.status !== "Resolved" &&
-                    c.status !== "Cannot Resolve",
-                ).length;
+                const od = catComplaints.filter((c) => isOverdueNow(c)).length;
                 const community = COMMUNITIES.find(
                   (x) => x.id === cat,
                 );
@@ -520,14 +517,12 @@ export function SecyDashboard({
 
   const mine = complaints.filter((c) => c.assignedRole === role);
   const queue = [...mine].sort((a, b) => {
-    if (a.isOverdue && !b.isOverdue) return -1;
-    if (!a.isOverdue && b.isOverdue) return 1;
+    if (isOverdueNow(a) && !isOverdueNow(b)) return -1;
+    if (!isOverdueNow(a) && isOverdueNow(b)) return 1;
     const order = { Pending: 0, "Under Progress": 1, "Cannot Resolve": 2, Resolved: 3 };
     return (order[a.status] ?? 0) - (order[b.status] ?? 0);
   });
-  const overdue = mine.filter(
-    (c) => c.isOverdue && c.status !== "Resolved" && c.status !== "Cannot Resolve",
-  );
+  const overdue = mine.filter((c) => isOverdueNow(c));
   const pending = mine.filter((c) => c.status === "Pending").length;
   const inProgress = mine.filter((c) => c.status === "Under Progress").length;
   const resolved = mine.filter((c) => c.status === "Resolved").length;
@@ -638,7 +633,7 @@ export function SecyDashboard({
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            {c.isOverdue && (
+                            {isOverdueNow(c) && (
                               <span className="rounded bg-rose-100 px-1 py-0.5 text-[8px] font-bold text-rose-700">
                                 OVERDUE
                               </span>
@@ -1092,7 +1087,7 @@ export function StudentDashboard({
                   >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        {c.isOverdue && (
+                        {isOverdueNow(c) && (
                           <span className="rounded bg-rose-100 px-1 py-0.5 text-[8px] font-bold text-rose-700">
                             OVERDUE
                           </span>
@@ -1277,12 +1272,13 @@ export function StudentDashboard({
                 📢 Notice Board
               </p>
               <div className="space-y-2">
-                {specialAnnouncements.map((a, i) => (
+                {/* Identity-keyed records: render .text, key by stable id */}
+                {specialAnnouncements.map((a) => (
                   <p
-                    key={i}
+                    key={a.id}
                     className="rounded bg-white/60 px-3 py-2 text-xs text-orange-800"
                   >
-                    {a}
+                    {a.text}
                   </p>
                 ))}
               </div>

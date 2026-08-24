@@ -1,12 +1,13 @@
 // Adding Google OAuth per Convex Auth documentation (the sanctioned reason
-// to modify this file): "Continue with Google" alongside email OTP + Anonymous.
+// to modify this file): "Continue with Google" alongside email OTP.
+// The Anonymous provider was removed: credential-less sessions passed
+// RequireAuth and landed on a mock student's dashboard (impersonation).
 //
 // Server-side domain enforcement lives in the `createOrUpdateUser` callback
 // below — a non-IITR Google account is rejected during sign-in itself,
 // mirroring the OAuth-callback pattern (never trust client-side checks alone).
 import Google from "@auth/core/providers/google";
 import { convexAuth } from "@convex-dev/auth/server";
-import { Anonymous } from "@convex-dev/auth/providers/Anonymous";
 import { emailOtp } from "./auth/emailOtp";
 
 // Mirrors src/lib/academic-identity.ts (Convex functions can't import
@@ -27,7 +28,9 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       authorization: { params: { prompt: "select_account" } },
     }),
     emailOtp,
-    Anonymous,
+    // Anonymous provider REMOVED (security fix): credential-less sessions
+    // passed RequireAuth and landed on a mock student's dashboard. An
+    // institute-only product must not mint identity-less accounts.
   ],
   callbacks: {
     async createOrUpdateUser(ctx, args) {

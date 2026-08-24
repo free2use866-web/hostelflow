@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import {
-  ALL_CATEGORIES, CATEGORY_TO_ROLE, ROLE_LABELS,
+  ALL_CATEGORIES, CATEGORY_TO_ROLE, ROLE_LABELS, isOverdueNow,
   type Category, type Complaint, type ComplaintStatus,
 } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -102,7 +102,9 @@ export function ComplaintsView() {
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColor(c.status)}`}>
                     {c.status}
                   </span>
-                  {c.isOverdue && (
+                  {/* DERIVED check: the stored flag freezes at creation and
+                      goes stale — always compute against the clock instead. */}
+                  {isOverdueNow(c) && (
                     <span className="flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">
                       <AlertTriangle className="size-3" /> OVERDUE
                     </span>
@@ -210,7 +212,7 @@ function ComplaintDetail({ complaint, onClose }: { complaint: Complaint; onClose
             <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
               {CATEGORY_EMOJI[complaint.category]} {complaint.category}
             </span>
-            {complaint.isOverdue && (
+            {isOverdueNow(complaint) && (
               <span className="flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">
                 <AlertTriangle className="size-3" /> OVERDUE
               </span>

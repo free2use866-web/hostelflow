@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
-import { uploadMedicalSlip, isSupabaseConfigured } from "@/lib/supabase";
+import { uploadMedicalSlip, isSupabaseConfigured, getMedicalSlipUrl } from "@/lib/supabase";
 import type { MealType, SickDietStatus, RebateStatus } from "@/lib/types";
+import { localYYYYMMDD } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +23,20 @@ function statusColor(s: string) {
     Rejected: "bg-rose-100 text-rose-800",
   };
   return m[s] ?? "bg-gray-100 text-gray-800";
+}
+
+/**
+ * SECURITY: mint a fresh short-lived signed URL at click time and open it
+ * after scheme validation. Stored refs are never rendered as raw hrefs —
+ * that used to allow `javascript:` URI injection from tampered records.
+ */
+async function openMedicalSlip(ref: string) {
+  const url = await getMedicalSlipUrl(ref);
+  if (!url) {
+    alert("Could not open the medical slip.");
+    return;
+  }
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
 export function MessView() {
@@ -136,10 +151,10 @@ export function MessView() {
                   </div>
                   <p className="mt-2 text-sm text-muted-foreground">{r.message}</p>
                   {r.medicalProofUrl && (
-                    <a href={r.medicalProofUrl} target="_blank" rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+                    <button type="button" onClick={() => openMedicalSlip(r.medicalProofUrl!)}
+                      className="mt-1 block inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
                       📎 View medical slip
-                    </a>
+                    </button>
                   )}
                   {r.deliveredBy && (
                     <p className="mt-1 text-xs text-emerald-700">Delivered by: {r.deliveredBy}</p>
@@ -210,7 +225,7 @@ export function MessView() {
 function SickDietForm({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const { currentUser, addSickDietRequest } = useStore();
   const [meal, setMeal] = useState<MealType>("Lunch");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(localYYYYMMDD()); // local date, never UTC
   const [msg, setMsg] = useState("");
   const [slip, setSlip] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -250,7 +265,7 @@ function SickDietForm({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
               </button>
             ))}
           </div>
-          <Input type="date" value={date} min={new Date().toISOString().slice(0, 10)}
+          <Input type="date" value={date} min={localYYYYMMDD()}
             onChange={(e) => setDate(e.target.value)} className="rounded-lg border-border" />
           <Textarea placeholder="Message (e.g. need khichdi, running fever)" rows={3} value={msg} onChange={(e) => setMsg(e.target.value)} className="rounded-lg border-border text-sm" />
 
@@ -286,12 +301,16 @@ function RebateForm() {
 
   const submit = () => {
     if (!start || !end) return;
-    const startD = new Date(start);
-    const endD = new Date(end);
-    const diffDays = Math.ceil((endD.getTime() - startD.getTime()) / 86400000);
+    const diffDays = Math.ceil((+new Date(end) - +new Date(start)) / 86400000);
+    // VALIDATION FIX: inverted ranges previously produced negative day/meal
+    // counts that were persisted into the ledger.
+    if (!Number.isFinite(diffDays) || diffDays <= 0) {
+      alert("End date must be after the start date.");
+      return;
+    }
     const minDate = new Date();
     minDate.setDate(minDate.getDate() + 2);
-    if (startD < minDate) { alert("Minimum 2 days advance notice required."); return; }
+    if (new Date(start) < minDate) { alert("Minimum 2 days advance notice required."); return; }
     if (diffDays > 35) { alert("Maximum 35 days per semester allowed."); return; }
     addRebate({ studentId: currentUser.id, startDate: start, endDate: end, totalDays: diffDays, totalMeals: diffDays * 3 });
     setStart(""); setEnd(""); setSubmitted(true);

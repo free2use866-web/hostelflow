@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import type { Pass, PassType, PassStatus } from "@/lib/types";
-import { IS_WARDEN_ROLE } from "@/lib/types";
+import { IS_WARDEN_ROLE, localYYYYMMDD } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -144,7 +144,7 @@ function NewPassDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v
             ))}
           </div>
           <Textarea placeholder="Reason for request…" rows={3} value={reason} onChange={(e) => setReason(e.target.value)} className="rounded-lg border-border text-sm" />
-          <Input type="date" value={date} min={new Date().toISOString().slice(0, 10)} onChange={(e) => setDate(e.target.value)} className="rounded-lg border-border text-sm" />
+          <Input type="date" value={date} min={localYYYYMMDD()} onChange={(e) => setDate(e.target.value)} className="rounded-lg border-border text-sm" />
           <p className="text-[10px] text-muted-foreground">
             Your pass will be sent to the Assistant Warden or relevant Secretary for approval.
           </p>

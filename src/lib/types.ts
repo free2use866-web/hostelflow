@@ -196,6 +196,35 @@ export const timeAgo = (iso: string): string => {
   return new Date(iso).toLocaleDateString();
 };
 
+// ─── Security & integrity helpers ────────────────────────────────────────
+
+/** Escalation window for complaints. */
+export const OVERDUE_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * DERIVED overdue check — never trust the stored `isOverdue` flag, which is
+ * frozen at creation time and goes stale (a ticket filed Monday still reads
+ * false on Wednesday). Terminal statuses are always excluded.
+ */
+export const isOverdueNow = (
+  c: Pick<Complaint, "createdAt" | "status">,
+): boolean => {
+  if (c.status === "Resolved" || c.status === "Cannot Resolve") return false;
+  return Date.now() - new Date(c.createdAt).getTime() > OVERDUE_WINDOW_MS;
+};
+
+/**
+ * Local-timezone YYYY-MM-DD. NEVER use `toISOString().slice(0,10)` for
+ * user-facing dates — it returns the UTC date, which is wrong by 5½ hours
+ * for IST and flips at 5:30 AM local / midnight UTC boundaries.
+ */
+export function localYYYYMMDD(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 // ─── Communities (Reddit-style subreddits) ────────────────────────────────
 
 export interface Community {
@@ -268,6 +297,13 @@ export interface BhawanConfig {
   createdAt: string;
 }
 
+/** Announcements are records with stable IDs — index-based removal deleted
+ *  the wrong item whenever the list changed between render and click. */
+export interface SpecialAnnouncement {
+  id: string;
+  text: string;
+}
+
 export interface AppState {
   users: User[];
   complaints: Complaint[];
@@ -276,13 +312,15 @@ export interface AppState {
   suggestions: Suggestion[];
   rebates: Rebate[];
   passes: Pass[];
-  specialAnnouncements: string[];
+  specialAnnouncements: SpecialAnnouncement[];
   joinedBy: Record<string, string[]>; // userId → joined community ids
   notices: Notice[];
   groupMessages: GroupMessage[];
   bhawanConfigs: BhawanConfig[];
   currentUserId: string;
   nextId: number;
+  /** Bumped on shape changes; mismatched persisted state is discarded. */
+  schemaVersion: number;
 }
 
 export const STATUS_COLORS: Record<string, string> = {

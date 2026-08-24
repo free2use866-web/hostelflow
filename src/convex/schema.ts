@@ -129,6 +129,13 @@ const schema = defineSchema(
     })
       .index("by_user", ["userId"])
       .index("by_date", ["date"]),
+
+    // Rate-limit ledger for OTP sends (sliding window per email identifier).
+    // Prevents mail-bombing via repeated signIn attempts.
+    otpRequests: defineTable({
+      identifier: v.string(),
+      at: v.number(),
+    }).index("by_identifier", ["identifier"]),
   },
   {
     schemaValidation: false,

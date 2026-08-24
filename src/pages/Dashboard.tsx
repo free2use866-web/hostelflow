@@ -193,7 +193,7 @@ function PersonaDropdown() {
 
 function DashboardInner() {
   const { currentUser, switchByEmail } = useStore();
-  const { user, signOut } = useAuth();
+  const { user, isLoading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<ViewKey>("overview");
 
@@ -202,16 +202,19 @@ function DashboardInner() {
     if (user?.email) switchByEmail(user.email);
   }, [user?.email, switchByEmail]);
 
-  // Defense-in-depth domain guard
+  // HARDENED eviction guard: an ABSENT email is just as disqualifying as a
+  // non-IITR one. (Previously the check skipped users with no email — which
+  // let credential-less/legacy sessions ride in on a mock student's identity.)
   useEffect(() => {
-    if (user?.email && !isValidIITREmail(user.email)) {
+    if (authLoading || !user) return;
+    if (!user.email || !isValidIITREmail(user.email)) {
       signOut()
         .then(() =>
           navigate("/?error=domain_restricted", { replace: true }),
         )
         .catch(() => {});
     }
-  }, [user?.email, signOut, navigate]);
+  }, [authLoading, user, signOut, navigate]);
 
   const handleSignOut = async () => {
     await signOut();

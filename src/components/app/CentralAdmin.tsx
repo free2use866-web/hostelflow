@@ -9,6 +9,7 @@ import {
   IS_WARDEN_ROLE,
   ROLE_LABELS,
   STATUS_COLORS,
+  isOverdueNow,
   scoreOf,
   timeAgo,
 } from "@/lib/types";
@@ -140,7 +141,8 @@ export function CentralAdmin() {
   const totalStudents = users.filter((u) => u.role === "Student").length;
   const totalStaff = users.filter((u) => u.role !== "Student").length;
   const activeComplaints = complaints.filter((c) => c.status !== "Resolved" && c.status !== "Cannot Resolve");
-  const overdueComplaints = activeComplaints.filter((c) => c.isOverdue);
+  // Derived at read time — the stored flag freezes at creation.
+  const overdueComplaints = activeComplaints.filter((c) => isOverdueNow(c));
   const pendingPasses = passes.filter((p) => p.status === "Pending");
   const activeSick = sickDietRequests.filter((r) => r.status !== "Delivered");
   const topSuggestions = [...suggestions].sort((a, b) => scoreOf(b) - scoreOf(a)).slice(0, 5);
@@ -150,7 +152,7 @@ export function CentralAdmin() {
   const bhawanStats = bhawanConfigs.map((bc) => {
     const bUsers = users.filter((u) => u.bhawan === bc.name);
     const bComplaints = complaints.filter((c) => c.bhawan === bc.name);
-    const bOverdue = bComplaints.filter((c) => c.isOverdue && c.status !== "Resolved" && c.status !== "Cannot Resolve");
+    const bOverdue = bComplaints.filter((c) => isOverdueNow(c));
     const bSick = sickDietRequests.filter((r) => r.bhawan === bc.name && r.status !== "Delivered");
     return {
       ...bc,
@@ -554,13 +556,15 @@ export function CentralAdmin() {
                   <p className="py-4 text-center text-xs text-muted-foreground">No global announcements.</p>
                 ) : (
                   <div className="space-y-2">
-                    {specialAnnouncements.map((a, i) => (
-                      <div key={i} className="flex items-center justify-between rounded-lg border border-border/50 bg-background px-3 py-2">
-                        <p className="text-xs text-foreground">{a}</p>
+                    {/* Identity-based records: render .text, delete by id —
+                        positional index removal used to hit the wrong row. */}
+                    {specialAnnouncements.map((a) => (
+                      <div key={a.id} className="flex items-center justify-between rounded-lg border border-border/50 bg-background px-3 py-2">
+                        <p className="text-xs text-foreground">{a.text}</p>
                         <Button
                           size="icon"
                           variant="ghost"
-                          onClick={() => removeGlobalAnnouncement(i)}
+                          onClick={() => removeGlobalAnnouncement(a.id)}
                           className="size-6 shrink-0 text-muted-foreground hover:text-destructive"
                         >
                           <X className="size-3" />

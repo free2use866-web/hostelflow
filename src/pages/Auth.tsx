@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useAuth } from "@/hooks/use-auth";
 import { isValidIITREmail } from "@/lib/academic-identity";
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { ArrowRight, Loader2, MailCheck } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
@@ -21,6 +23,10 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = resolveRedirect(searchParams.get("returnTo"), redirectAfterAuth);
+
+  // SECURITY: code requests go through the server-enforced dispatcher
+  // (domain gate + per-email rate limit), never straight to signIn.
+  const requestOtp = useAction(api.otp.requestOtp);
 
   const [step, setStep] = useState<"google" | "signIn" | { email: string }>("google");
   const [otp, setOtp] = useState("");
@@ -55,7 +61,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     }
     setIsLoading(true);
     try {
-      await signIn("email-otp", fd);
+      // Server validates the domain and enforces the send budget before
+      // dispatching — client-side checks are convenience only.
+      await requestOtp({ email });
       setStep({ email });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send code.");
