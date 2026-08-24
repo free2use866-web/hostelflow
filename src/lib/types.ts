@@ -174,9 +174,22 @@ export interface Suggestion {
   comments: SuggestionComment[];
 }
 
-/** Reddit-style score: upvotes minus downvotes. */
-export const scoreOf = (v: { upvotedBy: string[]; downvotedBy: string[] }) =>
-  v.upvotedBy.length - v.downvotedBy.length;
+/** Reddit-style score: upvotes minus downvotes. Tolerates stale/partial data. */
+export const scoreOf = (v: { upvotedBy?: string[]; downvotedBy?: string[] }) =>
+  (v.upvotedBy?.length ?? 0) - (v.downvotedBy?.length ?? 0);
+
+/** Compact relative-time label, e.g. "3h ago". */
+export const timeAgo = (iso: string): string => {
+  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return "just now";
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d ago`;
+  return new Date(iso).toLocaleDateString();
+};
 
 // ─── Communities (Reddit-style subreddits) ────────────────────────────────
 

@@ -6,7 +6,7 @@ import type {
 } from "./types";
 import { CATEGORY_TO_ROLE, BHAWANS, ALL_CATEGORIES } from "./types";
 
-const STORAGE_KEY = "iitr-hms-v3";
+const STORAGE_KEY = "iitr-hms-v4";
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function uid(prefix: string, n: number): string {
