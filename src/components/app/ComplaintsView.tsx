@@ -14,18 +14,15 @@ import {
 import {
   AlertTriangle, ArrowRightLeft, Clock, MessageSquare, Plus, Send,
 } from "lucide-react";
+// Unified design-system imports: shared tone registry, empty-state primitive,
+// and the memoized role-scoped filter hook (logic moved out of JSX).
+import { statusTone } from "@/lib/status";
+import { EmptyState } from "@/components/features/dashboard/primitives";
+import { useComplaintFilters } from "@/hooks/use-complaint-filters";
 
 const CATEGORY_EMOJI: Record<Category, string> = {
   Mess: "🍽️", Maintenance: "🔧", General: "📋", Sports: "⚽", Wellness: "💊", Technical: "💻",
 };
-
-function statusColor(s: string) {
-  const m: Record<string, string> = {
-    Pending: "bg-amber-100 text-amber-800", "Under Progress": "bg-sky-100 text-sky-800",
-    Resolved: "bg-emerald-100 text-emerald-800", "Cannot Resolve": "bg-rose-100 text-rose-800",
-  };
-  return m[s] ?? "bg-gray-100 text-gray-800";
-}
 
 export function ComplaintsView() {
   const store = useStore();
@@ -34,18 +31,14 @@ export function ComplaintsView() {
   const isWarden = role === "Warden" || role === "AsstWarden";
   const isSecy = ["MessSec", "MaintSec", "GenSec", "SportsSec", "WellnessSec", "TechSec"].includes(role);
 
-  const [filter, setFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [detailId, setDetailId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
 
-  // Filter complaints
-  let visible = complaints;
-  if (isSecy && !isWarden) {
-    visible = visible.filter((c) => c.assignedRole === role);
-  }
-  if (filter !== "all") visible = visible.filter((c) => c.category === filter);
-  if (statusFilter !== "all") visible = visible.filter((c) => c.status === statusFilter);
+  // Filtering (role scope → category → status) is memoized business logic in
+  // its own hook — no longer recomputed inline on every render.
+  const {
+    filter, setFilter, statusFilter, setStatusFilter, visible,
+  } = useComplaintFilters(complaints, role);
 
   const detail = detailId ? complaints.find((c) => c.id === detailId) : null;
 
@@ -99,7 +92,7 @@ export function ComplaintsView() {
                   <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
                     {CATEGORY_EMOJI[c.category]} {c.category}
                   </span>
-                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColor(c.status)}`}>
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone(c.status)}`}>
                     {c.status}
                   </span>
                   {/* DERIVED check: the stored flag freezes at creation and
@@ -126,9 +119,33 @@ export function ComplaintsView() {
           ))}
         </AnimatePresence>
         {visible.length === 0 && (
-          <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
-            No complaints match the current filters.
-          </div>
+          <EmptyState
+            icon={<MessageSquare className="size-5" />}
+            title={
+              filter !== "all" || statusFilter !== "all"
+                ? "No complaints match your filters"
+                : "No complaints yet"
+            }
+            body={
+              filter !== "all" || statusFilter !== "all"
+                ? "Try widening or clearing the filters."
+                : "File an issue above — it auto-routes to the right committee."
+            }
+            action={
+              filter !== "all" || statusFilter !== "all" ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setFilter("all");
+                    setStatusFilter("all");
+                  }}
+                >
+                  Clear filters
+                </Button>
+              ) : undefined
+            }
+          />
         )}
       </div>
 
@@ -208,7 +225,7 @@ function ComplaintDetail({ complaint, onClose }: { complaint: Complaint; onClose
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto rounded-xl border-border">
         <DialogHeader>
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColor(complaint.status)}`}>{complaint.status}</span>
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone(complaint.status)}`}>{complaint.status}</span>
             <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
               {CATEGORY_EMOJI[complaint.category]} {complaint.category}
             </span>
@@ -241,7 +258,7 @@ function ComplaintDetail({ complaint, onClose }: { complaint: Complaint; onClose
                     updateComplaintStatus(complaint.id, s);
                   }
                 }}
-                className={`rounded-full text-xs font-semibold ${statusColor(s)} border-none`}>
+                className={`rounded-full text-xs font-semibold ${statusTone(s)} border-none`}>
                 {s}
               </Button>
             ))}

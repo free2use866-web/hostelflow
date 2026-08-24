@@ -506,6 +506,8 @@ function CommentNode({
                 onClick={() =>
                   voteComment(suggestionId, comment.id, "up")
                 }
+                aria-label="Upvote comment"
+                aria-pressed={myVote === "up"}
                 className={`${myVote === "up" ? "text-orange-500" : "text-muted-foreground hover:text-orange-500"}`}
               >
                 <ArrowBigUp
@@ -517,6 +519,8 @@ function CommentNode({
                 onClick={() =>
                   voteComment(suggestionId, comment.id, "down")
                 }
+                aria-label="Downvote comment"
+                aria-pressed={myVote === "down"}
                 className={`${myVote === "down" ? "text-indigo-400" : "text-muted-foreground hover:text-indigo-400"}`}
               >
                 <ArrowBigDown

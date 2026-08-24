@@ -39,11 +39,11 @@ import { AdminPortal } from "@/components/app/AdminPortal";
 import { CentralAdmin } from "@/components/app/CentralAdmin";
 import { ManagementGroup } from "@/components/app/ManagementGroup";
 import { NoticeBoard } from "@/components/app/NoticeBoard";
-import {
-  WardenDashboard,
-  SecyDashboard,
-  StudentDashboard,
-} from "@/components/app/RoleDashboards";
+// Persona dashboards live in focused feature modules
+// (extracted from the former 1,300-line RoleDashboards monolith).
+import { WardenDashboard } from "@/components/features/dashboard/WardenDashboard";
+import { SecyDashboard } from "@/components/features/dashboard/SecyDashboard";
+import { StudentDashboard } from "@/components/features/dashboard/StudentDashboard";
 import { OnboardingGate } from "@/components/app/OnboardingGate";
 import { isValidIITREmail } from "@/lib/academic-identity";
 

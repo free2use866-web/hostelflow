@@ -13,13 +13,9 @@ import { CheckCircle2, KeyRound, Plus, XCircle } from "lucide-react";
 
 const PASS_EMOJI: Record<PassType, string> = { LateEntry: "🌙", SportsGear: "⚽", GuestStay: "🏨" };
 const PASS_LABEL: Record<PassType, string> = { LateEntry: "Late Night Entry", SportsGear: "Sports Equipment", GuestStay: "Guest Stay" };
-
-function statusColor(s: string) {
-  const m: Record<string, string> = {
-    Pending: "bg-amber-100 text-amber-800", Approved: "bg-emerald-100 text-emerald-800", Rejected: "bg-rose-100 text-rose-800",
-  };
-  return m[s] ?? "bg-gray-100 text-gray-800";
-}
+// Single source of truth for status badge tones + production empty state.
+import { statusTone } from "@/lib/status";
+import { EmptyState } from "@/components/features/dashboard/primitives";
 
 export function PassesView() {
   const store = useStore();
@@ -65,9 +61,21 @@ export function PassesView() {
 
       <div className="space-y-3">
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
-            No passes found.
-          </div>
+          <EmptyState
+            icon={<KeyRound className="size-5" />}
+            title={
+              tab === "mine"
+                ? "No passes requested yet"
+                : tab === "pending"
+                  ? "Nothing awaiting approval"
+                  : "No passes on record"
+            }
+            body={
+              tab === "mine"
+                ? "Request a late-entry, sports-gear or guest-stay pass with the button above."
+                : undefined
+            }
+          />
         ) : (
           filtered.map((p) => (
             <motion.div key={p.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -76,7 +84,7 @@ export function PassesView() {
                 <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
                   {PASS_EMOJI[p.passType]} {PASS_LABEL[p.passType]}
                 </span>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColor(p.status)}`}>
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone(p.status)}`}>
                   {p.status}
                 </span>
                 <span className="ml-auto text-xs text-muted-foreground">{p.validDate}</span>

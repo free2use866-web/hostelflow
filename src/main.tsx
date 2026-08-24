@@ -15,11 +15,29 @@ const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
-// Simple loading fallback for route transitions
+/** Branded route-loading state: mirrors the app shell (serif wordmark,
+ *  primary-tinted mark, skeleton bars) instead of a bare "Loading...". */
 function RouteLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-pulse text-muted-foreground">Loading...</div>
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-6"
+    >
+      <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10">
+        <span aria-hidden className="text-xl">🏛️</span>
+      </div>
+      <p
+        className="text-sm font-semibold text-foreground"
+        style={{ fontFamily: "Lora, serif" }}
+      >
+        Hostel Management System
+      </p>
+      <div className="w-48 space-y-2" aria-hidden>
+        <div className="h-2 w-full animate-pulse rounded bg-muted" />
+        <div className="h-2 w-2/3 animate-pulse rounded bg-muted" />
+      </div>
+      <span className="sr-only">Loading…</span>
     </div>
   );
 }

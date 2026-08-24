@@ -11,19 +11,11 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { Clock, FileText, Pill, UtensilsCrossed } from "lucide-react";
+// Unified tone registry — replaces this view's private drifting status map.
+import { statusTone } from "@/lib/status";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MEAL_EMOJI: Record<MealType, string> = { Breakfast: "🌅", Lunch: "🍛", Dinner: "🌙" };
-
-function statusColor(s: string) {
-  const m: Record<string, string> = {
-    Requested: "bg-purple-100 text-purple-800", "In Preparation": "bg-sky-100 text-sky-800",
-    "Out for Delivery": "bg-amber-100 text-amber-800", Delivered: "bg-emerald-100 text-emerald-800",
-    Pending: "bg-amber-100 text-amber-800", Approved: "bg-emerald-100 text-emerald-800",
-    Rejected: "bg-rose-100 text-rose-800",
-  };
-  return m[s] ?? "bg-gray-100 text-gray-800";
-}
 
 /**
  * SECURITY: mint a fresh short-lived signed URL at click time and open it
@@ -142,7 +134,7 @@ export function MessView() {
                     <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-800">
                       {MEAL_EMOJI[r.mealType]} {r.mealType}
                     </span>
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColor(r.status)}`}>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone(r.status)}`}>
                       {r.status}
                     </span>
                     <span className="ml-auto text-xs text-muted-foreground">
@@ -165,7 +157,7 @@ export function MessView() {
                       {(["Requested", "In Preparation", "Out for Delivery", "Delivered"] as SickDietStatus[]).map((s) => (
                         <Button key={s} size="sm" variant="outline" disabled={r.status === s}
                           onClick={() => updateSickDietStatus(r.id, s, currentUser.name)}
-                          className={`rounded-full text-[10px] font-semibold ${statusColor(s)} border-none`}>
+                          className={`rounded-full text-[10px] font-semibold ${statusTone(s)} border-none`}>
                           {s}
                         </Button>
                       ))}
@@ -205,7 +197,7 @@ export function MessView() {
                     </p>
                     <p className="text-xs text-muted-foreground">{r.totalDays} days · {r.totalMeals} meals</p>
                   </div>
-                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColor(r.status)}`}>
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone(r.status)}`}>
                     {r.status}
                   </span>
                 </div>
