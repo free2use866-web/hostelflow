@@ -1,22 +1,29 @@
 /**
- * Better Auth — server config (dormant until a Node host is available).
+ * Better Auth — server config.
  *
- * WHY DORMANT: Better Auth's `handler` must run on a Node/Hono/Next-style
- * server with access to a SQL database. This project's backend is Convex,
- * whose HTTP actions cannot host Better Auth's database layer. The existing
- * Convex Auth sign-in (Google + email OTP) remains the live system.
+ * Better Auth is framework-agnostic and runs on any Node-compatible host
+ * (Hono, Express, Next.js route handler, Bun, etc.) with a SQL database.
+ * Because this project's backend is Convex — whose HTTP actions cannot host
+ * Better Auth's database layer — the existing Convex Auth sign-in (Google +
+ * email OTP) remains the live system. This module activates once deployed
+ * on a separate Node host.
  *
- * ACTIVATION PATH: deploy this factory on any Node host (Hono, Express,
- * Next.js route handler, Bun) with a SQL database, set the two env keys,
- * then mount it:
+ * ACTIVATION — deploy this factory on a Node host with a SQL database:
  *
- *   import { createIITRBetterAuth } from "@/lib/better-auth";
- *   export const auth = createIITRBetterAuth({ database: prismaAdapter(db) });
- *   // Hono/Next: app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
+ * ```ts
+ * import { createIITRBetterAuth } from "@/lib/better-auth";
+ * const auth = createIITRBetterAuth({ database: prismaAdapter(db) });
+ * // Hono:  app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
+ * // Next:  app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
+ * ```
  *
- * Keys (Keys/API keys tab):
- *   BETTER_AUTH_SECRET — random 32+ char string (openssl rand -base64 32)
+ * Required Keys (add in the project's Keys/API keys tab):
+ *   BETTER_AUTH_SECRET — random 32+ char string (e.g. openssl rand -base64 32)
  *   BETTER_AUTH_URL    — public origin of the auth host, e.g. https://auth.example.com
+ *
+ * Optional Keys (for Google social sign-in):
+ *   GOOGLE_CLIENT_ID     — OAuth 2.0 Client ID from Google Cloud Console
+ *   GOOGLE_CLIENT_SECRET — OAuth 2.0 Client Secret from Google Cloud Console
  */
 import { betterAuth } from "better-auth";
 
@@ -36,7 +43,7 @@ export function isValidIITREmail(email: string): boolean {
 
 export interface BetterAuthDeps {
   /** Any Better Auth adapter: Kysely/SQLite, Drizzle, Prisma, Mongo, or custom. */
-  database: Parameters<typeof betterAuth>[0] extends never ? unknown : NonNullable<Parameters<typeof betterAuth>[0]["database"]>;
+  database: NonNullable<Parameters<typeof betterAuth>[0]["database"]>;
 }
 
 /**
