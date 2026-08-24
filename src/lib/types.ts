@@ -148,19 +148,58 @@ export interface MessMenu {
   noticeText?: string;
 }
 
+export interface SuggestionComment {
+  id: string;
+  authorId: string;
+  authorName: string;
+  text: string;
+  createdAt: string;
+  parentId: string | null; // null = top-level reply
+  upvotedBy: string[];
+  downvotedBy: string[];
+}
+
 export interface Suggestion {
   id: string;
   authorId: string;
   bhawan: string;
-  category: string;
+  category: string; // community id (r/Mess, r/General, …)
   title: string;
   description: string;
-  upvotes: number;
   upvotedBy: string[];
+  downvotedBy: string[];
   status: SuggestionStatus;
   wardenFeedback?: string;
   createdAt: string;
+  comments: SuggestionComment[];
 }
+
+/** Reddit-style score: upvotes minus downvotes. */
+export const scoreOf = (v: { upvotedBy: string[]; downvotedBy: string[] }) =>
+  v.upvotedBy.length - v.downvotedBy.length;
+
+// ─── Communities (Reddit-style subreddits) ────────────────────────────────
+
+export interface Community {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  baseMembers: number;
+  bannerClass: string; // gradient classes for the banner strip
+}
+
+export const COMMUNITIES: Community[] = [
+  { id: "General", name: "General", icon: "📋", description: "Everything hostel life — common rooms, canteen, laundry and general issues.", baseMembers: 1240, bannerClass: "from-amber-200 to-amber-400" },
+  { id: "Mess", name: "Mess", icon: "🍽️", description: "Menu talk, food quality, special meals and mess feedback.", baseMembers: 1890, bannerClass: "from-emerald-200 to-emerald-400" },
+  { id: "Maintenance", name: "Maintenance", icon: "🔧", description: "Plumbing, electrical, Wi-Fi — report it, discuss it, fix it.", baseMembers: 980, bannerClass: "from-sky-200 to-sky-400" },
+  { id: "Sports", name: "Sports", icon: "⚽", description: "Gym, courts, gear checkout and inter-bhawan tournaments.", baseMembers: 1100, bannerClass: "from-orange-200 to-orange-400" },
+  { id: "Wellness", name: "Wellness", icon: "💊", description: "Health centre, mental wellbeing and dispensary topics.", baseMembers: 760, bannerClass: "from-purple-200 to-purple-400" },
+  { id: "Technical", name: "Technical", icon: "💻", description: "Wi-Fi, labs, printers and portal bugs.", baseMembers: 1320, bannerClass: "from-indigo-200 to-indigo-400" },
+];
+
+export const communityById = (id: string) =>
+  COMMUNITIES.find((c) => c.id === id) ?? COMMUNITIES[0];
 
 export interface Rebate {
   id: string;
@@ -194,6 +233,7 @@ export interface AppState {
   rebates: Rebate[];
   passes: Pass[];
   specialAnnouncements: string[];
+  joinedBy: Record<string, string[]>; // userId → joined community ids
   currentUserId: string;
   nextId: number;
 }

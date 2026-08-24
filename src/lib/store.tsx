@@ -6,7 +6,7 @@ import type {
 } from "./types";
 import { CATEGORY_TO_ROLE, BHAWANS, ALL_CATEGORIES } from "./types";
 
-const STORAGE_KEY = "iitr-hms-v2";
+const STORAGE_KEY = "iitr-hms-v3";
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function uid(prefix: string, n: number): string {
@@ -205,34 +205,56 @@ function genMockData(): AppState {
       id: uid("sg", n()), authorId: users[0].id, bhawan: "Ravindra", category: "General",
       title: "24/7 study room in every bhawan",
       description: "Exam season makes library crowded. A small 24-hour study room with AC and Wi-Fi in each bhawan would help immensely.",
-      upvotes: 34, upvotedBy: [users[1].id, users[2].id], status: "Under Review",
+      upvotedBy: [users[1].id, users[2].id, users[4].id, users[6].id, users[8].id], downvotedBy: [],
+      status: "Under Review",
       wardenFeedback: "Interesting proposal. We're evaluating space availability.", createdAt: hoursAgo(200),
+      comments: [
+        { id: "c-101", authorId: users[2].id, authorName: users[2].name, text: "Library is absolutely packed during exams — this would help a lot.", createdAt: hoursAgo(190), parentId: null, upvotedBy: [users[0].id, users[1].id], downvotedBy: [] },
+        { id: "c-102", authorId: users[0].id, authorName: users[0].name, text: "Exactly! Even the reading room has a queue after 8 PM.", createdAt: hoursAgo(180), parentId: "c-101", upvotedBy: [users[2].id], downvotedBy: [] },
+        { id: "c-103", authorId: users[6].id, authorName: users[6].name, text: "Please add one in Ravindra A-block, it's closest to my room 🙏", createdAt: hoursAgo(150), parentId: null, upvotedBy: [], downvotedBy: [] },
+      ],
     },
     {
       id: uid("sg", n()), authorId: users[2].id, bhawan: "Govind", category: "Mess",
-      title: "Late night maggi/cup noodle counter",
-      description: "A small counter serving maggi and cup noodles from 10 PM to 1 AM would be a lifesaver.",
-      upvotes: 52, upvotedBy: [users[0].id, users[3].id], status: "Open", createdAt: hoursAgo(150),
+      title: "Late night maggi / cup noodle counter",
+      description: "A small counter serving maggi and cup noodles from 10 PM to 1 AM would be a lifesaver during deadline weeks.",
+      upvotedBy: [users[0].id, users[3].id, users[5].id, users[7].id, users[9].id, users[1].id, users[4].id], downvotedBy: [users[8].id],
+      status: "Open", createdAt: hoursAgo(150),
+      comments: [
+        { id: "c-201", authorId: users[5].id, authorName: users[5].name, text: "Cheese maggi at 11 PM would fix 90% of my problems.", createdAt: hoursAgo(140), parentId: null, upvotedBy: [users[2].id, users[0].id], downvotedBy: [] },
+        { id: "c-202", authorId: users[8].id, authorName: users[8].name, text: "Who's paying for the gas and the guy running it at 1 AM?", createdAt: hoursAgo(120), parentId: null, upvotedBy: [], downvotedBy: [users[2].id] },
+        { id: "c-203", authorId: users[2].id, authorName: users[2].name, text: "Mess secy said a small monthly add-on could cover it — discussing with warden.", createdAt: hoursAgo(110), parentId: "c-202", upvotedBy: [users[5].id], downvotedBy: [] },
+      ],
     },
     {
       id: uid("sg", n()), authorId: users[5].id, bhawan: "Sarojini", category: "Sports",
       title: "Outdoor basketball court resurfacing",
-      description: "The outdoor court is cracked and slippery when wet. Needs urgent resurfacing.",
-      upvotes: 28, upvotedBy: [users[4].id], status: "Approved", createdAt: hoursAgo(300),
+      description: "The outdoor court is cracked and slippery when wet. Needs urgent resurfacing before someone gets hurt.",
+      upvotedBy: [users[4].id, users[8].id, users[1].id], downvotedBy: [],
+      status: "Approved", createdAt: hoursAgo(300),
       wardenFeedback: "Approved. Work orders raised with sports council. Expected completion: next semester.",
+      comments: [],
     },
     {
       id: uid("sg", n()), authorId: users[3].id, bhawan: "Cautley", category: "Wellness",
       title: "Monthly mental health check-in by counselor",
-      description: "One in-person counselor visit per month would help students deal with academic pressure.",
-      upvotes: 41, upvotedBy: [users[0].id, users[2].id, users[6].id], status: "Open", createdAt: hoursAgo(100),
+      description: "One in-person counselor visit per month per bhawan would help students deal with academic pressure before it builds up.",
+      upvotedBy: [users[0].id, users[2].id, users[6].id, users[9].id, users[1].id], downvotedBy: [],
+      status: "Open", createdAt: hoursAgo(100),
+      comments: [
+        { id: "c-301", authorId: users[9].id, authorName: users[9].name, text: "Strongly support this. Even a quarterly session would be a start.", createdAt: hoursAgo(90), parentId: null, upvotedBy: [users[3].id], downvotedBy: [] },
+      ],
     },
     {
       id: uid("sg", n()), authorId: users[8].id, bhawan: "Rajendra", category: "Technical",
       title: "Fix portal login bugs before placement season",
       description: "The hostel portal crashes during peak hours. With placements starting, we need reliable access.",
-      upvotes: 67, upvotedBy: [users[0].id, users[1].id, users[5].id], status: "Implemented",
+      upvotedBy: [users[0].id, users[1].id, users[5].id, users[3].id, users[6].id, users[7].id, users[9].id], downvotedBy: [],
+      status: "Implemented",
       wardenFeedback: "Fixed. Server capacity increased and caching implemented.", createdAt: hoursAgo(400),
+      comments: [
+        { id: "c-401", authorId: users[5].id, authorName: users[5].name, text: "Can confirm it's much faster now. Thanks for the quick fix!", createdAt: hoursAgo(350), parentId: null, upvotedBy: [users[8].id], downvotedBy: [] },
+      ],
     },
   ];
 
@@ -280,9 +302,16 @@ function genMockData(): AppState {
     "🏏 Inter-Bhawan Cricket Tournament starts next Monday. Register with your GenSec.",
   ];
 
+  const joinedBy: Record<string, string[]> = {
+    [users[0].id]: ["Mess", "General", "Technical"],
+    [users[2].id]: ["Technical", "General", "Mess"],
+    [users[5].id]: ["Wellness", "Sports"],
+    [users[8].id]: ["Technical"],
+  };
+
   return {
     users, complaints, sickDietRequests, messMenus, suggestions, rebates, passes,
-    specialAnnouncements, currentUserId: users[0].id, nextId: next + 100,
+    specialAnnouncements, joinedBy, currentUserId: users[0].id, nextId: next + 100,
   };
 }
 
@@ -307,8 +336,11 @@ interface StoreContextType extends AppState {
   addSickDietRequest: (r: Omit<SickDietRequest, "id" | "status" | "deliveredBy" | "notifiedRoles">) => void;
   updateSickDietStatus: (id: string, status: SickDietStatus, deliveredBy?: string) => void;
 
-  addSuggestion: (s: Omit<Suggestion, "id" | "upvotes" | "upvotedBy" | "status" | "createdAt">) => void;
-  upvoteSuggestion: (id: string) => void;
+  addSuggestion: (s: Omit<Suggestion, "id" | "upvotedBy" | "downvotedBy" | "status" | "createdAt" | "comments">) => void;
+  voteSuggestion: (id: string, dir: "up" | "down") => void;
+  addSuggestionComment: (suggestionId: string, text: string, parentId?: string | null) => void;
+  voteComment: (suggestionId: string, commentId: string, dir: "up" | "down") => void;
+  toggleJoin: (communityId: string) => void;
   updateSuggestionStatus: (id: string, status: SuggestionStatus, feedback?: string) => void;
 
   addRebate: (r: Omit<Rebate, "id" | "status" | "submittedAt">) => void;
@@ -475,31 +507,109 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [patch]);
 
-  // ─── Suggestions ───────────────────────────────────────────────────────────
+  // ─── Suggestions / Community (Reddit-style) ─────────────────────────────
   const addSuggestion: StoreContextType["addSuggestion"] = useCallback((data) => {
     patch((s) => ({
       ...s,
       suggestions: [
-        { ...data, id: uid("sg", s.nextId), upvotes: 1, upvotedBy: [s.currentUserId], status: "Open" as const, createdAt: nowISO() },
+        {
+          ...data, id: uid("sg", s.nextId),
+          upvotedBy: [s.currentUserId], downvotedBy: [],
+          status: "Open" as const, createdAt: nowISO(), comments: [],
+        },
         ...s.suggestions,
       ],
       nextId: s.nextId + 1,
     }));
   }, [patch]);
 
-  const upvoteSuggestion: StoreContextType["upvoteSuggestion"] = useCallback((id) => {
+  /** Reddit vote semantics: up→down switches, clicking active vote clears it. */
+  const voteSuggestion: StoreContextType["voteSuggestion"] = useCallback((id, dir) => {
     patch((s) => ({
       ...s,
       suggestions: s.suggestions.map((sg) => {
         if (sg.id !== id) return sg;
-        const alreadyVoted = sg.upvotedBy.includes(s.currentUserId);
+        const me = s.currentUserId;
+        const up = sg.upvotedBy.includes(me);
+        const down = sg.downvotedBy.includes(me);
+        if (dir === "up") {
+          return down
+            ? { ...sg, downvotedBy: sg.downvotedBy.filter((u) => u !== me), upvotedBy: [...sg.upvotedBy, me] }
+            : up
+              ? { ...sg, upvotedBy: sg.upvotedBy.filter((u) => u !== me) }
+              : { ...sg, upvotedBy: [...sg.upvotedBy, me] };
+        }
+        return up
+          ? { ...sg, upvotedBy: sg.upvotedBy.filter((u) => u !== me), downvotedBy: [...sg.downvotedBy, me] }
+          : down
+            ? { ...sg, downvotedBy: sg.downvotedBy.filter((u) => u !== me) }
+            : { ...sg, downvotedBy: [...sg.downvotedBy, me] };
+      }),
+    }));
+  }, [patch]);
+
+  const addSuggestionComment: StoreContextType["addSuggestionComment"] = useCallback((suggestionId, text, parentId = null) => {
+    patch((s) => {
+      const me = s.users.find((u) => u.id === s.currentUserId);
+      const comment = {
+        id: `c-${s.nextId}`, authorId: s.currentUserId,
+        authorName: me?.name ?? "Unknown", text: text.trim(),
+        createdAt: nowISO(), parentId: parentId ?? null,
+        upvotedBy: [s.currentUserId], downvotedBy: [],
+      };
+      return {
+        ...s,
+        suggestions: s.suggestions.map((sg) =>
+          sg.id === suggestionId ? { ...sg, comments: [...sg.comments, comment] } : sg,
+        ),
+        nextId: s.nextId + 1,
+      };
+    });
+  }, [patch]);
+
+  const voteComment: StoreContextType["voteComment"] = useCallback((suggestionId, commentId, dir) => {
+    patch((s) => ({
+      ...s,
+      suggestions: s.suggestions.map((sg) => {
+        if (sg.id !== suggestionId) return sg;
+        const me = s.currentUserId;
         return {
           ...sg,
-          upvotes: alreadyVoted ? sg.upvotes - 1 : sg.upvotes + 1,
-          upvotedBy: alreadyVoted ? sg.upvotedBy.filter((u) => u !== s.currentUserId) : [...sg.upvotedBy, s.currentUserId],
+          comments: sg.comments.map((c) => {
+            if (c.id !== commentId) return c;
+            const up = c.upvotedBy.includes(me);
+            const down = c.downvotedBy.includes(me);
+            if (dir === "up") {
+              return down
+                ? { ...c, downvotedBy: c.downvotedBy.filter((u) => u !== me), upvotedBy: [...c.upvotedBy, me] }
+                : up
+                  ? { ...c, upvotedBy: c.upvotedBy.filter((u) => u !== me) }
+                  : { ...c, upvotedBy: [...c.upvotedBy, me] };
+            }
+            return up
+              ? { ...c, upvotedBy: c.upvotedBy.filter((u) => u !== me), downvotedBy: [...c.downvotedBy, me] }
+              : down
+                ? { ...c, downvotedBy: c.downvotedBy.filter((u) => u !== me) }
+                : { ...c, downvotedBy: [...c.downvotedBy, me] };
+          }),
         };
       }),
     }));
+  }, [patch]);
+
+  const toggleJoin: StoreContextType["toggleJoin"] = useCallback((communityId) => {
+    patch((s) => {
+      const mine = s.joinedBy[s.currentUserId] ?? [];
+      return {
+        ...s,
+        joinedBy: {
+          ...s.joinedBy,
+          [s.currentUserId]: mine.includes(communityId)
+            ? mine.filter((c) => c !== communityId)
+            : [...mine, communityId],
+        },
+      };
+    });
   }, [patch]);
 
   const updateSuggestionStatus: StoreContextType["updateSuggestionStatus"] = useCallback((id, status, feedback) => {
@@ -551,7 +661,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         ...state, currentUser, switchUser, switchByEmail, genId, completeOnboarding,
         addComplaint, updateComplaintStatus, reassignComplaint, addComplaintComment,
         addSickDietRequest, updateSickDietStatus,
-        addSuggestion, upvoteSuggestion, updateSuggestionStatus,
+        addSuggestion, voteSuggestion, addSuggestionComment, voteComment, toggleJoin, updateSuggestionStatus,
         addRebate, updateRebateStatus,
         addPass, updatePassStatus,
       }}
