@@ -125,9 +125,24 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Prevent horizontal overflow from fixed-width children */
+    overflow-x: hidden;
+    /* Safe-area support for iOS notch / home bar */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
   button:not([disabled]),
   [role="button"]:not([disabled]) {
     cursor: pointer;
   }
+  /* Prevent iOS Safari auto-zoom on input focus — min font size 16px */
+  input,
+  textarea,
+  select {
+    @apply text-base;
+  }
 }
+
+/* Hide scrollbar for horizontal-scroll areas on mobile */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }

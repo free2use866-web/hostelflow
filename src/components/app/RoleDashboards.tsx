@@ -170,7 +170,7 @@ export function WardenDashboard({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           label="Active Complaints"
           value={active.length}
@@ -575,7 +575,7 @@ export function SecyDashboard({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           label="In Queue (Pending)"
           value={pending}
@@ -1041,7 +1041,7 @@ export function StudentDashboard({
         {/* Left column */}
         <div className="space-y-6">
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3">
             <StatCard
               label="My Open Complaints"
               value={openMine.length}

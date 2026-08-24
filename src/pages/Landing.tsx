@@ -86,7 +86,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 sm:py-5">
         <div className="flex items-center gap-2.5">
           <img src="/src/assets/logo.svg" alt="HostelHub" className="size-10" />
           <span className="font-bold tracking-tight text-foreground" style={{ fontFamily: "Lora, serif" }}>
@@ -103,20 +103,21 @@ export default function Landing() {
       </header>
 
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pt-16 pb-20 text-center">
+      <section className="mx-auto max-w-6xl px-4 pt-12 pb-16 text-center sm:px-6 sm:pt-16 sm:pb-20">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/8 px-4 py-1.5 text-xs font-semibold tracking-wide text-primary">
             🔐 Exclusive to @iitr.ac.in
           </p>
-          <h1 className="mx-auto max-w-3xl text-4xl leading-tight font-bold text-foreground sm:text-5xl" style={{ fontFamily: "Lora, serif" }}>
+          <h1 className="mx-auto max-w-3xl text-[2rem] leading-tight font-bold text-foreground sm:text-4xl md:text-5xl" style={{ fontFamily: "Lora, serif" }}>
             The Hostel Management System{" "}
             <br className="hidden sm:block" />
             for <FlipWords />
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground" style={{ fontFamily: "Libre Baskerville, serif" }}>
+          <p className="mx-auto mt-5 max-w-xl text-[0.95rem] leading-relaxed text-muted-foreground sm:text-base" style={{ fontFamily: "Libre Baskerville, serif" }}>
             One portal for complaints, mess, sick meals, digital passes, community suggestions and everything else — for every Bhawan at IIT Roorkee.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
+            {/* Touch-friendly CTA: generous tap area */}
             <Link to="/auth">
               <Button size="lg" className="rounded-full bg-primary px-7 font-semibold text-primary-foreground">
                 Enter as Institute Member <ArrowRight className="ml-2 size-4" />
@@ -141,7 +142,7 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-6xl px-6 pb-20">
+      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20">
         <StaggerText
           text="Everything a Bhawan needs — in one place."
           className="mb-8 block text-center text-2xl font-bold text-foreground"
@@ -171,7 +172,7 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="mx-auto max-w-4xl px-6 pb-20">
+      <section className="mx-auto max-w-4xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="rounded-xl border border-border bg-card p-8 text-center">
           <h2 className="mb-8 text-2xl font-bold text-foreground" style={{ fontFamily: "Lora, serif" }}>
             How a complaint flows

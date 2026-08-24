@@ -37,7 +37,7 @@ export function ManagementGroup() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] rounded-xl border border-border bg-card overflow-hidden">
+    <div className="flex h-[calc(100vh-16rem)] sm:h-[calc(100vh-12rem)] rounded-xl border border-border bg-card overflow-hidden">
       {/* Sidebar — members */}
       <div className="hidden w-56 shrink-0 border-r border-border bg-muted/30 p-4 md:block">
         <h3

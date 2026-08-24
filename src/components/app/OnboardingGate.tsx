@@ -127,7 +127,7 @@ export function OnboardingGate() {
 
           <div>
             <label className="mb-1 block text-xs font-semibold text-muted-foreground">Bhawan</label>
-            <div className="grid grid-cols-5 gap-1.5">
+            <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5">
               {BHAWANS.map((b) => (
                 <button key={b} type="button" onClick={() => setBhawan(b)}
                   className={`rounded-lg border px-1 py-2 text-[10px] font-semibold transition-colors ${

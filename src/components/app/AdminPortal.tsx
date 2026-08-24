@@ -125,7 +125,7 @@ export function AdminPortal() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -162,7 +162,7 @@ export function AdminPortal() {
         >
           <Users className="size-4 text-primary" /> Staff & Role Holders
         </h3>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto -mx-5 px-5 md:mx-0 md:px-0">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-border text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -232,7 +232,7 @@ export function AdminPortal() {
         >
           <Shield className="size-4 text-sky-600" /> Students (Can be Promoted)
         </h3>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto -mx-5 px-5 md:mx-0 md:px-0">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-border text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">

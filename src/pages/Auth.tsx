@@ -93,7 +93,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             <span className="text-sm font-bold text-foreground" style={{ fontFamily: "Lora, serif" }}>HostelHub</span>
           </button>
 
-          <div className="rounded-xl border border-border bg-card p-7">
+          <div className="rounded-xl border border-border bg-card p-5 sm:p-7">
             {step === "google" ? (
               <>
                 <h1 className="text-xl font-bold text-foreground" style={{ fontFamily: "Lora, serif" }}>Sign in</h1>

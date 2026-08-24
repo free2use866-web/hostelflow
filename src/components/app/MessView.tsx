@@ -75,7 +75,7 @@ export function MessView() {
       {/* Weekly Menu */}
       {tab === "menu" && (
         <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1 scrollbar-none">
             {DAY_NAMES.map((d, i) => (
               <button key={d} onClick={() => setDayIdx(i)}
                 className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
@@ -85,7 +85,7 @@ export function MessView() {
               </button>
             ))}
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
             {(["Breakfast", "Lunch", "Dinner"] as MealType[]).map((meal) => {
               const menu = bhawanMenus.find((m) => m.mealType === meal);
               return (

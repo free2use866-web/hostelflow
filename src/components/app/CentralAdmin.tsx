@@ -218,18 +218,18 @@ export function CentralAdmin() {
         </div>
       </div>
 
-      {/* Tab switcher */}
-      <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1">
+      {/* Tab switcher — scrollable on mobile */}
+      <div className="flex gap-1 overflow-x-auto rounded-lg border border-border bg-muted/50 p-1 scrollbar-none">
         {([
           { key: "overview" as Tab, label: "Overview", icon: Activity },
-          { key: "users" as Tab, label: "User Management", icon: Users },
-          { key: "bhawans" as Tab, label: "Bhawan Management", icon: Building2 },
-          { key: "settings" as Tab, label: "System Settings", icon: Settings },
+          { key: "users" as Tab, label: "Users", icon: Users },
+          { key: "bhawans" as Tab, label: "Bhawans", icon: Building2 },
+          { key: "settings" as Tab, label: "Settings", icon: Settings },
         ]).map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`relative z-10 flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
               tab === t.key
                 ? "text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -242,7 +242,7 @@ export function CentralAdmin() {
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}
-            <span className="relative z-10 flex items-center gap-1.5">
+            <span className="relative z-10 flex items-center gap-1.5 whitespace-nowrap">
               <t.icon className="size-3.5" />
               {t.label}
             </span>
@@ -262,7 +262,7 @@ export function CentralAdmin() {
           {tab === "overview" && (
             <div className="space-y-6">
               {/* Global stats */}
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-6">
                 <StatCard label="Total Users" value={users.length} tone="bg-amber-50 text-amber-900 border border-amber-200" icon={<Users className="size-8" />} />
                 <StatCard label="Students" value={totalStudents} tone="bg-sky-50 text-sky-900 border border-sky-200" icon={<Users className="size-8" />} />
                 <StatCard label="Active Complaints" value={activeComplaints.length} tone="bg-orange-50 text-orange-900 border border-orange-200" icon={<FileText className="size-8" />} />

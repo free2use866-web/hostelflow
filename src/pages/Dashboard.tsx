@@ -84,12 +84,13 @@ function AnimatedTabs({
   onChange: (k: string) => void;
 }) {
   return (
-    <div className="relative flex gap-1 rounded-lg border border-border bg-muted/50 p-1">
+    /* horizontally scrollable on mobile so all 8 tabs are reachable */
+    <div className="flex gap-1 overflow-x-auto rounded-lg border border-border bg-muted/50 p-1 scrollbar-none">
       {tabs.map((t) => (
         <button
           key={t.key}
           onClick={() => onChange(t.key)}
-          className={`relative z-10 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+          className={`relative z-10 flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
             active === t.key
               ? "text-primary-foreground"
               : "text-muted-foreground hover:text-foreground"
@@ -106,7 +107,7 @@ function AnimatedTabs({
               }}
             />
           )}
-          <span className="relative z-10 flex items-center gap-1.5">
+          <span className="relative z-10 flex items-center gap-1.5 whitespace-nowrap">
             {t.icon}
             {t.label}
           </span>
@@ -242,7 +243,7 @@ function DashboardInner() {
       <div className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
-            <img src="/src/assets/logo.svg" alt="HostelHub" className="size-8" />
+            <img src="/src/assets/logo.svg" alt="HostelHub" className="size-8 shrink-0" />
             <span
               className="hidden text-sm font-bold text-foreground sm:inline"
               style={{ fontFamily: "Lora, serif" }}
@@ -251,7 +252,10 @@ function DashboardInner() {
             </span>
           </div>
 
-          <PersonaDropdown />
+          {/* Persona switcher wraps gracefully on small screens */}
+          <div className="hidden sm:block">
+            <PersonaDropdown />
+          </div>
 
           <div className="flex items-center gap-2">
             <Button
@@ -268,7 +272,13 @@ function DashboardInner() {
 
       <div className="mx-auto max-w-7xl px-4 py-6">
         {/* Navigation tabs */}
-        <div className="mb-6 flex flex-wrap items-center gap-2">
+        {/* Mobile persona switcher below the header */}
+        <div className="mb-3 sm:hidden">
+          <PersonaDropdown />
+        </div>
+
+        {/* Navigation tabs — scrollable on mobile */}
+        <div className="mb-6 -mx-4 px-4 md:mx-0 md:px-0">
           <AnimatedTabs
             tabs={visibleNav.map((n) => ({
               key: n.key,

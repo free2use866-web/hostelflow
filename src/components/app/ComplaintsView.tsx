@@ -65,8 +65,8 @@ export function ComplaintsView() {
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2">
+      {/* Filters — horizontally scrollable on mobile */}
+      <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1 scrollbar-none">
         {["all", ...ALL_CATEGORIES].map((c) => (
           <button key={c} onClick={() => setFilter(c)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
