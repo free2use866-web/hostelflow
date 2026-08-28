@@ -246,7 +246,7 @@ function DashboardInner() {
       <div className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5">
           <div className="flex items-center gap-3">
-            <img src="/src/assets/logo.svg" alt="HostelHub" className="size-8 shrink-0" />
+            <img src="/logo.svg" alt="HostelHub" className="size-8 shrink-0" />
             <span
               className="hidden text-sm font-bold text-foreground sm:inline"
               style={{ fontFamily: "Lora, serif" }}

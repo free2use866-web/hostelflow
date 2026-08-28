@@ -97,7 +97,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           className="w-full max-w-md"
         >
           <button onClick={() => navigate("/")} className="mb-8 flex items-center gap-2 self-start">
-            <img src="/src/assets/logo.svg" alt="HostelHub" className="size-9" />
+            <img src="/logo.svg" alt="HostelHub" className="size-9" />
             <span className="text-sm font-bold text-foreground" style={{ fontFamily: "Lora, serif" }}>HostelHub</span>
           </button>
 
