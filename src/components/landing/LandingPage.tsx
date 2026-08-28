@@ -30,30 +30,37 @@ import {
   ArrowUpRight,
   BadgeCheck,
   BarChart3,
+  Bell,
   Check,
   CheckCircle2,
   ChevronDown,
   Cookie,
+  FileText,
   GitBranch,
   Github,
   Globe,
+  GraduationCap,
   Heart,
-  Info,
+  KeyRound,
   Loader2,
   Lock,
   Mail,
   Menu,
+  MessageSquare,
   Moon,
-  Orbit,
   Send,
   Server,
   ShieldCheck,
   Sparkles,
   Sun,
   Terminal,
+  ThumbsUp,
+  UtensilsCrossed,
   Users,
   X,
   XCircle,
+  Info,
+  Building2,
   Zap,
 } from "lucide-react";
 
@@ -84,8 +91,8 @@ interface LegalSection {
   bullets?: string[];
 }
 
-const BRAND = "Meridian";
-const CONSENT_KEY = "meridian-cookie-consent-v1";
+const BRAND = "HostelHub";
+const CONSENT_KEY = "hostelhub-cookie-consent-v1";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Design tokens — swapped live by the theme toggle via CSS custom properties  */
@@ -225,47 +232,56 @@ const NAV_LINKS = [
 ];
 
 const COMPLIANCE = [
-  { icon: ShieldCheck, label: "SOC2 Type II" },
-  { icon: Globe, label: "GDPR Compliant" },
-  { icon: BadgeCheck, label: "ISO 27001" },
-  { icon: Activity, label: "99.99% Uptime SLA" },
+  { icon: ShieldCheck, label: "Institute-only access" },
+  { icon: Users, label: "Role-based access" },
+  { icon: CheckCircle2, label: "99.9% uptime" },
+  { icon: ShieldCheck, label: "Privacy-first" },
 ];
 
-const PARTNERS = ["Acme Corp", "Nimbus", "Hexlab", "Quantia", "Driftwave", "Solstice"];
+const BHAWANS = ["Ravindra", "Govind", "Cautley", "Rajendra", "Sarojini"];
 
+// Bhawans are displayed in the proof bar.
 const REGIONS = [
-  { code: "iad", label: "Virginia, US" },
-  { code: "fra", label: "Frankfurt, EU" },
-  { code: "sin", label: "Singapore" },
-  { code: "gru", label: "São Paulo, BR" },
+  { code: "ravindra", label: "Ravindra Bhawan" },
+  { code: "govind", label: "Govind Bhawan" },
+  { code: "cautley", label: "Cautley Bhawan" },
+  { code: "rajendra", label: "Rajendra Bhawan" },
+  { code: "sarojini", label: "Sarojini Bhawan" },
 ];
-
 const COMPANY_SIZES = ["1–10", "11–50", "51–200", "201–1000", "1000+"];
+
+const FEATURES_DATA = [
+  { title: "Smart Complaint Routing", desc: "Auto-routes to the right secretary based on category." },
+  { title: "Mess & Diet Management", desc: "Weekly menus, sick-diet requests, and rebate tracking." },
+  { title: "Community Boards", desc: "Reddit-style boards for hostel life discussions." },
+  { title: "Digital Gate Passes", desc: "Late entries, sports gear, guest stays — one-tap approval." },
+  { title: "Notice Board", desc: "Pinned notices from wardens and secretaries." },
+  { title: "Management Group Chat", desc: "Private chat for wardens and secretaries." },
+];
 
 const FAQ_ITEMS = [
   {
-    q: "How does pricing work as my team scales?",
-    a: "Plans are priced per workspace, not per seat — invite your whole engineering org on Scale without per-user fees. Usage-based components (bandwidth, build minutes) have hard spending caps you configure, so a traffic spike never becomes a surprise invoice.",
+    q: "Is HostelHub free to use?",
+    a: "Yes! HostelHub is completely free for all IIT Roorkee residents. There are no paid tiers — every feature is available to students, secretaries, and wardens. Just sign in with your @iitr.ac.in email.",
   },
   {
-    q: "Where is my data stored?",
-    a: "You pick the region — Virginia, Frankfurt, Singapore or São Paulo — at project creation time, and all build artifacts, logs and runtime data stay pinned there. We never replicate customer data across regions without explicit opt-in.",
+    q: "Do I need to install anything?",
   },
   {
-    q: "Is Meridian compliant with SOC 2 and GDPR?",
-    a: "Yes. We hold SOC 2 Type II (audited annually, report available under NDA) and ISO 27001 certifications, operate as an EU GDPR-compliant processor with signed DPAs, and publish a full sub-processor list. Data is encrypted in transit (TLS 1.3) and at rest (AES-256).",
+    q: "Is my data secure?",
+    a: "Yes. All data is encrypted in transit and at rest. Only institute email addresses (.iitr.ac.in) are allowed to sign up, ensuring only verified residents can access the platform. We use role-based access control so students, secretaries, and wardens see only what they need.",
   },
   {
-    q: "Can we self-host or bring our own cloud?",
-    a: "Enterprise customers can deploy Meridian's control plane into their own AWS, GCP or Azure accounts (BYOC). The runners are fully self-hostable; you keep the keys, we keep the batteries charged.",
+    q: "Which bhawans are supported?",
+    a: "HostelHub currently supports all 5 major bhawans at IIT Roorkee: Ravindra, Govind, Cautley, Rajendra, and Sarojini. We're expanding to more bhawans based on demand.",
   },
   {
-    q: "How long does migrating from another platform take?",
-    a: "Most teams ship their first production deployment on day one. Our importer converts Vercel, Netlify and Heroku configuration automatically, and solutions engineers run white-glove migrations for Scale and Enterprise plans.",
+    q: "How does HostelHub handle complaint routing?",
+    a: "When a student files a complaint, it's automatically routed to the right secretary based on category (mess, maintenance, technical, etc.). Secretaries can update status, and students get real-time notifications on progress.",
   },
   {
     q: "What support channels do you offer?",
-    a: "Hobby includes community support. Scale adds a shared Slack channel with a 4-hour first-response target during business hours. Enterprise gets 24/7 escalation with a 15-minute page for Sev-1 incidents.",
+    a: "For support, email support@hostelhub.app. Your wardens and secretaries are the first line of support, and the HostelHub team handles platform issues within 24 hours.",
   },
 ];
 
@@ -277,7 +293,7 @@ const LEGAL_CONTENT: Record<
     title: "Privacy Policy",
     updated: "Last updated: August 1, 2026",
     intro:
-      "This policy explains what personal data Meridian Labs, Inc. (\u201cMeridian\u201d, \u201cwe\u201d) collects when you use meridian.dev and the Meridian platform, why we collect it, and the rights you have over it.",
+      "This policy explains what personal data HostelHub collects when you use hostelhub.app, why we collect it, and the rights you have over it.",
     sections: [
       {
         heading: "1. Data We Collect",
@@ -310,7 +326,7 @@ const LEGAL_CONTENT: Record<
         ],
         bullets: [
           "Self-serve export and deletion from Settings → Workspace → Danger Zone.",
-          "Email privacy@meridian.dev — we respond within 30 days, usually within 3 business days.",
+          "Email legal@hostelhub.app — we respond within 30 days, usually within 3 business days.",
           "You may lodge a complaint with your supervisory authority at any time.",
         ],
       },
@@ -323,7 +339,7 @@ const LEGAL_CONTENT: Record<
       {
         heading: "6. International Transfers & Liability",
         paras: [
-          "Transfers outside the EEA rely on Standard Contractual Clauses plus supplementary technical measures. Nothing in this policy limits liability for breaches of applicable data-protection law. Our DPO can be reached at dpo@meridian.dev.",
+          "Transfers outside the EEA rely on Standard Contractual Clauses plus supplementary technical measures. Nothing in this policy limits liability for breaches of applicable data-protection law. Our DPO can be reached at legal@hostelhub.app.",
         ],
       },
     ],
@@ -332,7 +348,7 @@ const LEGAL_CONTENT: Record<
     title: "Terms of Service",
     updated: "Last updated: August 1, 2026",
     intro:
-      "These Terms govern your access to and use of the Meridian platform. By creating an account you agree to them on behalf of yourself and any organization you represent.",
+      "These Terms govern your access to and use of HostelHub. By creating an account you agree to them on behalf of yourself as an IIT Roorkee resident.",
     sections: [
       {
         heading: "1. Accounts & Eligibility",
@@ -359,7 +375,7 @@ const LEGAL_CONTENT: Record<
       {
         heading: "4. Intellectual Property",
         paras: [
-          "You retain all rights to your code, data and content. We claim no license to it beyond what is technically required to build and host it for you. The Meridian service, brand and documentation remain our exclusive property.",
+          "You retain all rights to your code, data and content. We claim no license to it beyond what is technically required to build and host it for you. The HostelHub service, brand and documentation remain our exclusive property.",
         ],
       },
       {
@@ -570,44 +586,31 @@ const MOCK_DATA: Record<MockTab, { kpi: string; kpiLabel: string; delta: string;
 };
 
 function MockWindow() {
-  const [tab, setTab] = useState<MockTab>("Overview");
-  const [rpm, setRpm] = useState(48213);
-
-  // Live "requests/min" ticker makes the demo feel like the real console.
-  useEffect(() => {
-    const t = window.setInterval(() => {
-      setRpm((v) => Math.max(40000, v + Math.round((Math.random() - 0.45) * 220)));
-    }, 1600);
-    return () => window.clearInterval(t);
-  }, []);
-
-  const data = MOCK_DATA[tab];
-
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[var(--lp-border-strong)] bg-[var(--lp-surface)] shadow-2xl">
+    <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
       {/* Window chrome */}
-      <div className="flex items-center gap-3 border-b border-[var(--lp-border)] bg-[var(--lp-surface-2)] px-4 py-3">
+      <div className="flex items-center gap-3 border-b border-border bg-muted/30 px-4 py-3">
         <div className="flex gap-1.5" aria-hidden="true">
           <span className="size-2.5 rounded-full bg-rose-500/80" />
           <span className="size-2.5 rounded-full bg-amber-500/80" />
           <span className="size-2.5 rounded-full bg-emerald-500/80" />
         </div>
-        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-[var(--lp-border)] bg-[var(--lp-chip)] px-3 py-1 text-[11px] font-medium text-[var(--lp-muted)]">
-          <Lock className="size-3" /> app.meridian.dev
+        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1 text-[11px] font-medium text-muted-foreground">
+          <span aria-hidden>🏛️</span> hostelhub.app/dashboard
         </div>
         <span className="hidden w-14 sm:block" aria-hidden="true" />
       </div>
 
       <div className="grid gap-0 sm:grid-cols-[132px_1fr]">
         {/* Sidebar */}
-        <nav className="hidden flex-col gap-1 border-r border-[var(--lp-border)] p-3 sm:flex" aria-label="Demo navigation">
-          {["Projects", "Deployments", "Analytics", "Logs", "Settings"].map((item, i) => (
+        <nav className="hidden flex-col gap-1 border-r border-border p-3 sm:flex" aria-label="Demo navigation">
+          {["Overview", "Complaints", "Mess & Diet", "Community", "Passes", "Notices"].map((item, i) => (
             <span
               key={item}
               className={`rounded-md px-2.5 py-1.5 text-[11px] font-medium ${
                 i === 1
-                  ? "bg-emerald-500/10 text-emerald-500"
-                  : "text-[var(--lp-muted)]"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground"
               }`}
             >
               {item}
@@ -618,88 +621,79 @@ function MockWindow() {
         <div className="p-4 sm:p-5">
           {/* Tabs */}
           <div className="flex items-center justify-between gap-3">
-            <div className="flex gap-1 rounded-lg border border-[var(--lp-border)] bg-[var(--lp-chip)] p-1" role="tablist" aria-label="Metrics">
+            <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1" role="tablist" aria-label="Dashboard tabs">
               {MOCK_TABS.map((t) => (
                 <button
                   key={t}
                   role="tab"
-                  aria-selected={tab === t}
-                  onClick={() => setTab(t)}
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors ${
-                    tab === t
-                      ? "bg-emerald-500 text-emerald-950"
-                      : "text-[var(--lp-muted)] hover:text-[var(--lp-text)]"
-                  }`}
+                  aria-selected={false}
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors text-muted-foreground hover:text-foreground`}
                 >
                   {t}
                 </button>
               ))}
             </div>
-            <span className="flex items-center gap-1.5 rounded-full border border-[var(--lp-border)] px-2.5 py-1 text-[10px] font-semibold text-emerald-500">
+            <span className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
               <Ping /> Live
             </span>
           </div>
 
           {/* KPI row */}
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-[var(--lp-border)] bg-[var(--lp-chip)] p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--lp-muted)]">Requests/min</p>
-              <p className="mt-1 font-mono text-lg font-bold tabular-nums text-[var(--lp-text)] sm:text-xl">
-                {rpm.toLocaleString()}
-              </p>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+              <p className="text-[10px] font-semibold text-amber-800">Open</p>
+              <p className="mt-1 font-mono text-lg font-bold tabular-nums text-amber-900">8</p>
             </div>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={tab}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="rounded-xl border border-[var(--lp-border)] bg-[var(--lp-chip)] p-3"
-              >
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--lp-muted)]">{data.kpiLabel}</p>
-                <p className="mt-1 flex items-baseline gap-2 font-mono text-lg font-bold tabular-nums text-[var(--lp-text)] sm:text-xl">
-                  {data.kpi}
-                  <span className="text-[11px] font-bold text-emerald-500">{data.delta}</span>
-                </p>
-              </motion.div>
-            </AnimatePresence>
+            <div className="rounded-lg border border-sky-200 bg-sky-50 p-3">
+              <p className="text-[10px] font-semibold text-sky-800">In Progress</p>
+              <p className="mt-1 font-mono text-lg font-bold tabular-nums text-sky-900">4</p>
+            </div>
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+              <p className="text-[10px] font-semibold text-emerald-800">Resolved</p>
+              <p className="mt-1 font-mono text-lg font-bold tabular-nums text-emerald-900">23</p>
+            </div>
           </div>
 
-          {/* Animated bar chart */}
-          <div className="mt-3 flex h-24 items-end gap-1 rounded-xl border border-[var(--lp-border)] bg-[var(--lp-chip)] p-3 sm:h-28" role="img" aria-label={`${tab} metrics chart`}>
-            {data.bars.map((v, i) => (
-              <motion.span
-                key={`${tab}-${i}`}
-                className="flex-1 origin-bottom rounded-sm bg-gradient-to-t from-emerald-600/60 to-emerald-400"
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: v / 100 }}
-                exit={{ scaleY: 0 }}
-                transition={{ delay: i * 0.03, duration: 0.5, ease: "easeOut" }}
-                style={{ height: "100%" }}
-              />
+          {/* Complaint list preview */}
+          <div className="mt-3 space-y-1.5">
+            {[
+              { title: "Leaking pipe in Block C", cat: "Maintenance", status: "In Progress" },
+              { title: "WiFi router down", cat: "Technical", status: "Pending" },
+              { title: "Mess food quality", cat: "Mess", status: "Resolved" },
+            ].map((c, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.08 }}
+                className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-background px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-medium text-foreground">{c.title}</p>
+                  <p className="text-[10px] text-muted-foreground">{c.cat}</p>
+                </div>
+                <span className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-semibold ${
+                  c.status === "Resolved" ? "bg-emerald-100 text-emerald-700" :
+                  c.status === "In Progress" ? "bg-sky-100 text-sky-700" :
+                  "bg-amber-100 text-amber-700"
+                }`}>{c.status}</span>
+              </motion.div>
             ))}
           </div>
-
-          <p className="mt-3 flex items-center gap-2 text-[11px] text-[var(--lp-muted)]">
-            <GitBranch className="size-3.5 shrink-0 text-emerald-500" />
-            <span className="truncate font-mono">feat/billing-v2</span> deployed to production ·{" "}
-            <span className="shrink-0 font-semibold text-emerald-500">38s</span>
-          </p>
         </div>
       </div>
 
-      {/* Floating deploy notification */}
+      {/* Floating notification */}
       <motion.div
-        className="absolute -right-3 top-20 hidden rounded-xl border border-[var(--lp-border-strong)] bg-[var(--lp-surface-2)] p-3 shadow-xl md:block lg:-right-8"
+        className="absolute -right-3 top-20 hidden rounded-xl border border-border bg-card p-3 shadow-xl md:block lg:-right-8"
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         aria-hidden="true"
       >
-        <p className="flex items-center gap-2 text-xs font-semibold text-[var(--lp-text)]">
-          <CheckCircle2 className="size-4 text-emerald-500" /> Deploy succeeded
+        <p className="flex items-center gap-2 text-xs font-semibold text-foreground">
+          <CheckCircle2 className="size-4 text-emerald-500" /> Complaint Resolved
         </p>
-        <p className="mt-0.5 pl-6 text-[11px] text-[var(--lp-muted)]">checkout-web · 42s · iad</p>
+        <p className="mt-0.5 pl-6 text-[11px] text-muted-foreground">Mess menu updated · Ravindra</p>
       </motion.div>
     </div>
   );
@@ -714,8 +708,9 @@ function scrollToId(id: string) {
 }
 
 function LogoMark() {
-  return (      <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 text-emerald-950 shadow-md shadow-emerald-500/25">
-      <Orbit className="size-4" strokeWidth={2.4} />
+  return (
+    <span className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+      🏛️
     </span>
   );
 }
@@ -744,14 +739,11 @@ function Header(props: {
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6" aria-label="Main navigation">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="flex min-h-11 items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-500"
+          className="flex min-h-11 items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
           aria-label={`${BRAND} home`}
         >
           <LogoMark />
-          <span className="text-[17px] font-semibold tracking-tight text-[var(--lp-text)]">{BRAND}</span>
-          <span className="ml-1 hidden items-center gap-1.5 rounded-full border border-[var(--lp-border)] bg-[var(--lp-chip)] px-2.5 py-1 text-[10px] font-semibold text-emerald-500 sm:flex">
-            <Ping /> Operational
-          </span>
+          <span className="text-[17px] font-semibold tracking-tight text-foreground" style={{ fontFamily: "Lora, serif" }}>{BRAND}</span>
         </button>
 
         <ul className="hidden items-center gap-1 md:flex">
@@ -789,9 +781,9 @@ function Header(props: {
           <motion.a
             href="/auth"
             whileTap={{ scale: 0.98 }}
-            className="hidden min-h-10 items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-emerald-950 shadow-md shadow-emerald-500/25 transition-colors hover:bg-emerald-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 md:flex"
+            className="hidden min-h-10 items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-md transition-colors hover:bg-primary/90 md:flex"
           >
-            Get Started <ArrowRight className="size-4" />
+            Sign In <ArrowRight className="size-4" />
           </motion.a>
 
           <button
@@ -938,7 +930,7 @@ function MobileSheet({
 
 function Hero({ onContact }: { onContact: () => void }) {
   const headlineGradient =
-    "bg-gradient-to-r from-emerald-300 via-emerald-400 to-teal-300 bg-clip-text text-transparent";
+    "bg-gradient-to-r from-primary via-primary/90 to-amber-700 bg-clip-text text-transparent";
 
   return (
     <section className="relative overflow-hidden pt-28 sm:pt-36">
@@ -957,12 +949,12 @@ function Hero({ onContact }: { onContact: () => void }) {
         <motion.button
           variants={fadeUp}
           onClick={() => scrollToId("features")}
-          className="group inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 py-1.5 pl-2 pr-3.5 text-xs font-semibold text-emerald-500 transition-colors hover:border-emerald-500/50"
+          className="group inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 py-1.5 pl-2 pr-3.5 text-xs font-semibold text-primary transition-colors hover:border-primary/50"
         >
-          <span className="flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-950">
-            <Sparkles className="size-3" /> New
+          <span className="flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary-foreground">
+            IIT Roorkee
           </span>
-          v2.0 is live — realtime edge functions
+          Trusted by 5 bhawans · 2000+ residents
           <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
         </motion.button>
 
@@ -970,17 +962,17 @@ function Hero({ onContact }: { onContact: () => void }) {
           variants={fadeUp}
           className="mt-6 text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--lp-text)] sm:text-6xl lg:text-7xl"
         >
-          From git push to global in{" "}
-          <span className={headlineGradient}>seconds.</span>
+          One platform for your{" "}
+          <span className={headlineGradient}>hostel life</span>.
         </motion.h1>
 
         <motion.p
           variants={fadeUp}
           className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[var(--lp-muted)] sm:text-lg"
         >
-          {BRAND} is the deployment platform for modern teams — realtime pipelines,
-          edge-native runtime, and enterprise-grade security wired together so you
-          never leave your terminal.
+          {BRAND} replaces WhatsApp groups and paper workflows with accountable
+          complaint routing, mess management, digital passes, and community boards
+          — built exclusively for IIT Roorkee residents.
         </motion.p>
 
         <motion.div variants={fadeUp} className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -990,7 +982,7 @@ function Hero({ onContact }: { onContact: () => void }) {
             whileTap={{ scale: 0.98 }}
             className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 text-sm font-semibold text-emerald-950 shadow-lg shadow-emerald-500/30 transition-colors hover:bg-emerald-400 sm:w-auto"
           >
-            Start deploying free <ArrowRight className="size-4" />
+            Sign in with IITR email <ArrowRight className="size-4" />
           </motion.a>
           <motion.button
             onClick={onContact}
@@ -998,12 +990,12 @@ function Hero({ onContact }: { onContact: () => void }) {
             whileTap={{ scale: 0.98 }}
             className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[var(--lp-border-strong)] bg-[var(--lp-chip)] px-6 text-sm font-semibold text-[var(--lp-text)] transition-colors hover:bg-[var(--lp-surface-2)] sm:w-auto"
           >
-            Talk to sales
+            See what's inside
           </motion.button>
         </motion.div>
 
         <motion.p variants={fadeUp} className="mt-4 text-xs text-[var(--lp-muted)]">
-          No credit card required · SOC2 Type II · Free tier forever
+          Only @iitr.ac.in emails · Google or email OTP sign-in · No passwords needed
         </motion.p>
       </motion.div>
 
@@ -1024,41 +1016,45 @@ function ProofBar() {
     <section className="border-y border-[var(--lp-border)] bg-[var(--lp-bg-soft)] py-10 sm:py-12" aria-label="Customers and compliance">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <p className="text-center text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--lp-muted)]">
-          Powering engineering teams at
+          Managing hostel operations across
         </p>
-        <motion.ul
+        <motion.div
           variants={staggerParent}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-12"
+          className="mt-6 flex flex-wrap items-center justify-center gap-4"
         >
-          {PARTNERS.map((name) => (
-            <motion.li
+          {BHAWANS.map((name) => (
+            <motion.div
               key={name}
               variants={fadeUp}
-              className="select-none text-lg font-bold tracking-tight text-[var(--lp-muted)] opacity-60 grayscale transition-opacity hover:opacity-100"
+              className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground"
             >
-              {name}
-            </motion.li>
+              <Building2 className="size-4 text-primary" /> {name}
+            </motion.div>
           ))}
-        </motion.ul>
+        </motion.div>
 
         <motion.ul
           variants={staggerParent}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="mt-8 flex flex-wrap items-center justify-center gap-2.5"
-          aria-label="Compliance certifications"
+          className="mt-6 flex flex-wrap items-center justify-center gap-2.5"
+          aria-label="Security features"
         >
-          {COMPLIANCE.map(({ icon: Icon, label }) => (
+          {[
+            { icon: ShieldCheck, label: "Institute-only access" },
+            { icon: Users, label: "Role-based access" },
+            { icon: CheckCircle2, label: "99.9% uptime" },
+          ].map(({ icon: Icon, label }) => (
             <motion.li
               key={label}
               variants={fadeUp}
-              className="flex items-center gap-2 rounded-full border border-[var(--lp-border)] bg-[var(--lp-surface)] px-3.5 py-2 text-xs font-semibold text-[var(--lp-text)]"
+              className="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground"
             >
-              <Icon className="size-4 text-emerald-500" /> {label}
+              <Icon className="size-4 text-primary" /> {label}
             </motion.li>
           ))}
         </motion.ul>
@@ -1084,8 +1080,8 @@ function BentoGrid() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Features"
-          title="Everything modern teams expect — one platform"
-          sub="Six primitives that replace a dozen vendors. Built for velocity, audited for trust."
+          title="Everything your hostel needs — one platform"
+          sub="Six core modules built for IIT Roorkee hostel management. Built for residents, designed for accountability."
         />
 
         <motion.div
@@ -1125,8 +1121,8 @@ function BentoGrid() {
               SSO/SAML, SCIM and immutable audit logs on every paid plan — not gated behind enterprise.
             </p>
             <div className="mt-4 flex flex-wrap gap-1.5">
-              <Chip><ShieldCheck className="size-3 text-emerald-500" /> SOC2</Chip>
-              <Chip><Globe className="size-3 text-emerald-500" /> GDPR</Chip>
+              <Chip><ShieldCheck className="size-3 text-emerald-500" /> Secure</Chip>
+              <Chip><Users className="size-3 text-emerald-500" /> Role-based</Chip>
               <Chip><BadgeCheck className="size-3 text-emerald-500" /> ISO 27001</Chip>
             </div>
           </motion.article>
@@ -1218,30 +1214,30 @@ function AboutSpotlight() {
             Our mission
           </motion.p>
           <motion.h2 variants={fadeUp} className="mt-3 text-balance text-3xl font-semibold tracking-tight text-[var(--lp-text)] sm:text-4xl">
-            We believe infrastructure should disappear.
+            Built by IITR residents, for IITR residents.
           </motion.h2>
           <motion.p variants={fadeUp} className="mt-5 leading-relaxed text-[var(--lp-muted)]">
-            The best platform is the one you stop thinking about. We're a team of
-            infrastructure obsessives building the deployment layer we always wanted —
-            fast enough to feel invisible, rigorous enough to bet the business on.
+            HostelHub was created to solve the real problems of hostel life —
+            lost complaints, missed mess updates, and scattered communication.
+            We replaced WhatsApp groups and paper forms with a single, accountable platform.
           </motion.p>
 
           <motion.ul variants={fadeUp} className="mt-6 space-y-4">
             {[
               {
                 icon: ShieldCheck,
-                title: "Security-first infrastructure",
-                body: "Quarterly third-party pentests, AES-256 at rest, TLS 1.3 everywhere, and a public 72-hour breach disclosure commitment.",
+                title: "Institute-only security",
+                body: "Restricted to @iitr.ac.in emails. Role-based access ensures students, secretaries, and wardens see only what they need.",
               },
               {
-                icon: Github,
-                title: "Open by default",
-                body: "Our scheduler and CLI are open source (40+ repos, 21k stars). If you depend on us, you can read how we work.",
+                icon: Bell,
+                title: "Real-time accountability",
+                body: "Every complaint has a clear owner, status pipeline, and timeline. Wardens get oversight dashboards with overdue alerts.",
               },
               {
-                icon: Heart,
-                title: "Developer joy is a feature",
-                body: "Sub-second feedback loops, humane error messages, and docs written by engineers who ship on the platform daily.",
+                icon: ThumbsUp,
+                title: "Community-driven",
+                body: "Reddit-style community boards let residents post suggestions, vote, and get warden feedback on issues that matter.",
               },
             ].map(({ icon: Icon, title, body }) => (
               <li key={title} className="flex gap-3.5">
@@ -1268,16 +1264,16 @@ function AboutSpotlight() {
         >
           <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
             <Terminal className="size-4 text-emerald-400" />
-            <span className="font-mono text-xs text-zinc-400">meridian — zsh</span>
+            <span className="font-mono text-xs text-zinc-400">hostelhub — zsh</span>
           </div>
           <div className="space-y-2 p-5 font-mono text-[13px] leading-relaxed">
-            <p><span className="text-emerald-400">$</span> <span className="text-zinc-200">npx meridian init</span></p>
+            <p><span className="text-emerald-400">$</span> <span className="text-zinc-200">npx hostelhub init</span></p>
             <p className="text-zinc-500">✔ Linked to acme/checkout</p>
             <p className="text-zinc-500">✔ Regions: iad, fra, sin, gru</p>
             <p className="text-zinc-500">✔ Secrets pulled from vault (read-only)</p>
             <p>
               <span className="text-emerald-400">$</span>{" "}
-              <span className="text-zinc-200">meridian deploy --prod</span>
+              <span className="text-zinc-200">hostelhub deploy --prod</span>
               <motion.span
                 className="ml-1 inline-block h-4 w-2 translate-y-0.5 bg-emerald-400"
                 animate={{ opacity: [1, 0, 1] }}
@@ -1294,41 +1290,31 @@ function AboutSpotlight() {
 }
 
 function PricingSection({ onSelectPlan }: { onSelectPlan: (plan: string) => void }) {
-  const [yearly, setYearly] = useState(true);
-
+  // HostelHub is free for all IITR residents
   const tiers = [
     {
-      name: "Hobby",
-      priceM: 0,
-      priceY: 0,
-      blurb: "For side projects and weekend hacks.",
-      cta: "Start free",
-      featured: false,
-      features: ["1 project", "Community support", "10GB bandwidth / mo", "*.meridian.app domain"],
-    },
-    {
-      name: "Scale",
-      priceM: 49,
-      priceY: 39,
-      blurb: "For teams shipping to production daily.",
-      cta: "Start 14-day trial",
+      name: "Student",
+      price: "Free",
+      blurb: "For all IITR residents.",
+      cta: "Sign in",
       featured: true,
-      features: [
-        "Unlimited projects",
-        "Preview environments",
-        "SSO/SAML + audit logs",
-        "Shared Slack channel",
-        "Hard spend caps",
-      ],
+      features: ["File & track complaints", "Request sick meals", "Apply for gate passes", "Community boards", "Notice board"],
     },
     {
-      name: "Enterprise",
-      priceM: null,
-      priceY: null,
-      blurb: "For orgs with compliance mandates.",
-      cta: "Contact sales",
+      name: "Secretary",
+      price: "Free",
+      blurb: "For hostel committee members.",
+      cta: "Sign in",
       featured: false,
-      features: ["BYOC / self-hosted runners", "SCIM provisioning", "99.99% uptime SLA", "Audit log streaming", "Dedicated CSM"],
+      features: ["Triage routed complaints", "Quick status updates", "Manage mess menus", "Moderate community", "Sick diet pipeline"],
+    },
+    {
+      name: "Warden",
+      price: "Free",
+      blurb: "For hostel administration.",
+      cta: "Sign in",
+      featured: false,
+      features: ["Oversight dashboard", "Approve passes & rebates", "Reassign complaints", "Manage roles & users", "Group chat"],
     },
   ];
 
@@ -1336,25 +1322,13 @@ function PricingSection({ onSelectPlan }: { onSelectPlan: (plan: string) => void
     <section id="pricing" className="scroll-mt-24 py-20 sm:py-28" aria-label="Pricing">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
-          eyebrow="Pricing"
-          title="Straightforward pricing, no seat taxes"
-          sub="Per-workspace pricing with hard usage caps. Start free, upgrade when it hurts."
+          eyebrow="Access"
+          title="Free for every IITR resident"
+          sub="All features are available to students, secretaries, and wardens. Sign in with your institute email."
         />
 
         <div className="mb-10 flex items-center justify-center gap-3">
-          <span className={`text-sm font-medium ${!yearly ? "text-[var(--lp-text)]" : "text-[var(--lp-muted)]"}`}>Monthly</span>
-          <button
-            onClick={() => setYearly((y) => !y)}
-            role="switch"
-            aria-checked={yearly}
-            aria-label="Toggle yearly billing"
-            className={`relative h-7 w-12 rounded-full p-1 transition-colors ${yearly ? "justify-end bg-emerald-500" : "justify-start bg-[var(--lp-border-strong)]"}`}
-          >
-            <motion.span layout className="block size-5 rounded-full bg-white shadow" />
-          </button>
-          <span className={`text-sm font-medium ${yearly ? "text-[var(--lp-text)]" : "text-[var(--lp-muted)]"}`}>
-            Yearly <span className="ml-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-500">−20%</span>
-          </span>
+          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">No credit card required · Institute email only</span>
         </div>
 
         <motion.div
@@ -1383,24 +1357,10 @@ function PricingSection({ onSelectPlan }: { onSelectPlan: (plan: string) => void
               <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--lp-muted)]">{tier.name}</h3>
 
               <div className="mt-4 flex min-h-14 items-baseline gap-1.5">
-                {tier.priceM === null ? (
+                {tier.price === "Custom" ? (
                   <span className="text-4xl font-semibold tracking-tight text-[var(--lp-text)]">Custom</span>
                 ) : (
-                  <>
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.span
-                        key={yearly ? `${tier.name}-y` : `${tier.name}-m`}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.22 }}
-                        className="font-mono text-4xl font-semibold tabular-nums tracking-tight text-[var(--lp-text)]"
-                      >
-                        ${yearly ? tier.priceY : tier.priceM}
-                      </motion.span>
-                    </AnimatePresence>
-                    <span className="text-sm text-[var(--lp-muted)]">/ mo{yearly && tier.priceY !== 0 ? ", billed yearly" : ""}</span>
-                  </>
+                  <span className="text-4xl font-semibold tracking-tight text-[var(--lp-text)]">{tier.price}</span>
                 )}
               </div>
 
@@ -1707,7 +1667,7 @@ function SiteFooter(props: {
     { label: "Careers", badge: "Hiring", action: () => props.notify("success", "We're hiring!", "12 open roles across infra, DX and design.") },
     { label: "Blog", action: () => props.notify("info", "Blog", "Engineering deep-dives publish weekly.") },
     { label: "Brand Assets", action: () => props.notify("info", "Brand kit", "Logos, colors and usage guidelines available on request.") },
-    { label: "Press Kit", action: () => props.notify("info", "Press", "Email press@meridian.dev for media resources.") },
+    { label: "Press Kit", action: () => props.notify("info", "Press", "Email press@hostelhub.app for media resources.") },
   ];
 
   const legal: FootLink[] = [
@@ -1750,7 +1710,7 @@ function SiteFooter(props: {
             >
               <Ping /> <span className="text-[var(--lp-text)]">All systems normal</span>
             </button>
-            <p className="mt-1 pl-1 text-xs text-[var(--lp-muted)]">status.meridian.dev · updated 30s ago</p>
+            <p className="mt-1 pl-1 text-xs text-[var(--lp-muted)]">hostelhub.app · built for IIT Roorkee</p>
             <div className="mt-4">
               <RegionSelect notify={props.notify} />
             </div>
@@ -1759,11 +1719,11 @@ function SiteFooter(props: {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[var(--lp-border)] pt-6 sm:flex-row">
           <p className="text-xs text-[var(--lp-muted)]">
-            © {YEAR} Meridian Labs, Inc. All rights reserved.
+            © {YEAR} HostelHub. All rights reserved.
           </p>
           <p className="flex items-center gap-1.5 text-xs text-[var(--lp-muted)]">
             <ShieldCheck className="size-3.5 text-emerald-500" />
-            SOC2 Type II · ISO 27001 · GDPR compliant
+            Institute-only access · Role-based · 99.9% uptime
           </p>
         </div>
       </div>
@@ -1962,7 +1922,7 @@ function LegalDialog({ kind, onClose }: { kind: LegalKind; onClose: () => void }
         ))}
       </div>
       <p className="mt-8 rounded-xl border border-[var(--lp-border)] bg-[var(--lp-chip)] p-4 text-xs leading-relaxed text-[var(--lp-muted)]">
-        Questions? Email <span className="font-semibold text-[var(--lp-text)]">legal@meridian.dev</span> — a human
+        Questions? Email <span className="font-semibold text-[var(--lp-text)]">legal@hostelhub.app</span> — a human
         (not a bot) answers within three business days.
       </p>
     </DialogShell>

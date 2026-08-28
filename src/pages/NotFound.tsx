@@ -1,26 +1,50 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router";
+import { ArrowLeft, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen flex flex-col"
-    >
+  const navigate = useNavigate();
 
-      
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="max-w-5xl mx-auto relative px-4">
-          <div className="flex items-center justify-center min-h-[200px]">
-            <div className="text-center">
-              <h1 className="text-3xl font-bold text-foreground mb-4 sm:text-4xl">404</h1>
-              <p className="text-base text-muted-foreground sm:text-lg">Page Not Found</p>
-            </div>
-          </div>
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="max-w-md text-center"
+      >
+        <div className="mb-6 inline-flex size-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <span className="text-3xl" aria-hidden>🏛️</span>
         </div>
-      </div>
-    </motion.div>
+        <h1
+          className="text-5xl font-bold tracking-tight text-foreground"
+          style={{ fontFamily: "Lora, serif" }}
+        >
+          404
+        </h1>
+        <p className="mt-3 text-lg font-medium text-foreground">
+          Page not found
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Button
+            onClick={() => navigate("/")}
+            className="gap-2"
+          >
+            <Home className="size-4" /> Go to home
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate(-1)}
+            className="gap-2"
+          >
+            <ArrowLeft className="size-4" /> Go back
+          </Button>
+        </div>
+      </motion.div>
+    </div>
   );
 }
